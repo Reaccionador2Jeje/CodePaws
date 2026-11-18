@@ -154,6 +154,7 @@ class CodePawsApp(App[None]):
                 yield Button("⌂  Home", id="nav-home", variant="primary")
                 yield Button("+  Adoption Center", id="nav-adoption")
                 yield Button("♥  My Family", id="nav-family")
+                yield Button("⌂  My House", id="nav-house")
                 yield Button("✦  About", id="nav-about")
                 yield Static(
                     "Take care. Play often.\nAdopt them all!",
@@ -205,6 +206,42 @@ class CodePawsApp(App[None]):
                     self.page = "family"
                     self.check_gem_milestones()
             self.persist()
+            await self.refresh_view()
+            return
+
+        if button_id.startswith("room-"):
+            self.current_room = button_id.removeprefix("room-")
+            await self.refresh_view()
+            return
+
+        if button_id.startswith("place-"):
+            pet_id = button_id.removeprefix("place-")
+            pet = next((item for item in self.pets if item.pet_id == pet_id), None)
+            if pet:
+                pet.room = self.current_room
+                self.selected_pet_id = pet.pet_id
+                self.notice = f"{pet.name} moved into the {self.room_name(self.current_room)}!"
+                self.persist()
+            await self.refresh_view()
+            return
+
+        if button_id.startswith("accessory-"):
+            accessory_id = button_id.removeprefix("accessory-")
+            item = next((entry for entry in self.ACCESSORIES if entry["id"] == accessory_id), None)
+            pet = self.selected_pet
+            if item and pet:
+                if accessory_id not in self.owned_accessories:
+                    if self.coins < item["price"]:
+                        self.notice = f"Not enough coins! {item['name']} costs {item['price']}."
+                    else:
+                        self.coins -= item["price"]
+                        self.owned_accessories.append(accessory_id)
+                        pet.accessory = accessory_id
+                        self.notice = f"Bought and equipped {item['name']} for {pet.name}!"
+                else:
+                    pet.accessory = accessory_id
+                    self.notice = f"{item['name']} equipped on {pet.name}!"
+                self.persist()
             await self.refresh_view()
             return
 
@@ -285,6 +322,7 @@ class CodePawsApp(App[None]):
         save_family(self.pets, self.selected_pet_id)
         from .storage import save_economy
         save_economy(self.coins, self.gems, sorted(self.gem_milestones))
+        save_house(self.owned_accessories)
 
     def animate_pet(self) -> None:
         """Refresh the modern mascot card and briefly show care reactions."""
