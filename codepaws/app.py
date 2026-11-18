@@ -109,6 +109,14 @@ class CodePawsApp(App[None]):
         color: #f4d58d;
         margin: 1 0;
     }
+    .wallet {
+        background: #203440;
+        border: round #42616d;
+        color: #f4d58d;
+        padding: 1 2;
+        margin: 1 0;
+        text-style: bold;
+    }
     """
 
     BINDINGS = [
@@ -121,6 +129,10 @@ class CodePawsApp(App[None]):
     def __init__(self) -> None:
         super().__init__()
         self.pets, self.selected_pet_id = load_family()
+        self.coins = 120
+        self.gems = 2
+        self.gem_milestones: set[int] = set()
+        self.load_economy()
         self.page = "home"
         self.notice = "Welcome home! Your programming family starts here."
         self.active_action: str | None = None
@@ -168,14 +180,24 @@ class CodePawsApp(App[None]):
 
         if button_id.startswith("adopt-"):
             pet_id = button_id.removeprefix("adopt-")
+            entry = next((item for item in PET_CATALOG if item["pet_id"] == pet_id), None)
             if pet_id in {pet.pet_id for pet in self.pets}:
                 self.notice = "That friend has already been adopted!"
+            elif entry is None:
+                self.notice = "That mascot is not available."
             else:
-                pet = create_pet(pet_id)
-                self.pets.append(pet)
-                self.selected_pet_id = pet.pet_id
-                self.notice = f"{pet.name} joined your programming family!"
-                self.page = "family"
+                coin_cost, gem_cost = self.adoption_price(entry)
+                if self.coins < coin_cost or self.gems < gem_cost:
+                    self.notice = f"Not enough currency! Need {coin_cost} coins" + (f" and {gem_cost} gems." if gem_cost else ".")
+                else:
+                    self.coins -= coin_cost
+                    self.gems -= gem_cost
+                    pet = create_pet(pet_id)
+                    self.pets.append(pet)
+                    self.selected_pet_id = pet.pet_id
+                    self.notice = f"{pet.name} joined your family! (-{coin_cost} coins, -{gem_cost} gems)"
+                    self.page = "family"
+                    self.check_gem_milestones()
             self.persist()
             await self.refresh_view()
             return
@@ -206,9 +228,37 @@ class CodePawsApp(App[None]):
         }
         callback = actions.get(action)
         if callback is not None:
+            before = (pet.happiness, pet.energy, pet.hunger, pet.cleanliness)
             self.notice = callback()
+            after = (pet.happiness, pet.energy, pet.hunger, pet.cleanliness)
+            if before != after:
+                earned = {"feed": 5, "play": 8, "sleep": 3, "bath": 4}[action]
+                self.coins += earned
+                self.notice += f"  (+{earned} coins)"
             self.active_action = action
             self.action_ticks = 10
+
+    def adoption_price(self, entry: dict) -> tuple[int, int]:
+        index = next(i for i, item in enumerate(PET_CATALOG) if item["pet_id"] == entry["pet_id"])
+        if index < 7:
+            return 80, 0
+        if index < 12:
+            return 140, 0
+        return 180, 1
+
+    def load_economy(self) -> None:
+        from .storage import load_economy
+        data = load_economy()
+        self.coins = max(0, int(data.get("coins", self.coins)))
+        self.gems = max(0, int(data.get("gems", self.gems)))
+        self.gem_milestones = set(data.get("gem_milestones", []))
+
+    def check_gem_milestones(self) -> None:
+        for milestone, reward in ((3, 2), (6, 3), (10, 5)):
+            if len(self.pets) >= milestone and milestone not in self.gem_milestones:
+                self.gems += reward
+                self.gem_milestones.add(milestone)
+                self.notice += f"  💎 Milestone: +{reward} gems!"
 
     @property
     def selected_pet(self) -> Pet | None:
@@ -219,6 +269,8 @@ class CodePawsApp(App[None]):
 
     def persist(self) -> None:
         save_family(self.pets, self.selected_pet_id)
+        from .storage import save_economy
+        save_economy(self.coins, self.gems, sorted(self.gem_milestones))
 
     def animate_pet(self) -> None:
         """Refresh the modern mascot card and briefly show care reactions."""
@@ -263,6 +315,7 @@ class CodePawsApp(App[None]):
         if pet is None:
             return [
                 Static("WELCOME TO CODEPAWS", classes="page-title"),
+                Static(self.wallet_line(), classes="wallet"),
                 Static(
                     "Your home is ready, but nobody lives here yet.\n"
                     "Visit the Adoption Center to welcome your first friend!",
@@ -273,6 +326,7 @@ class CodePawsApp(App[None]):
 
         return [
             Static("YOUR LITTLE HOME", classes="page-title"),
+            Static(self.wallet_line(), classes="wallet"),
             Static(self.notice, classes="notice"),
             Static(f"Meet {pet.name}  ·  {pet.technology}", classes="page-title"),
             Static(
@@ -300,6 +354,9 @@ class CodePawsApp(App[None]):
                 classes="muted",
             ),
         ]
+
+    def wallet_line(self) -> str:
+        return f"[bold #f4d58d]◉ {self.coins} coins[/]    [bold #8bd5ff]◆ {self.gems} gems[/]"
 
     def pet_visual(self, pet: Pet) -> str:
         """Build a colorful, responsive mascot card with Rich markup."""
@@ -335,23 +392,28 @@ class CodePawsApp(App[None]):
                 "Choose your next family member!",
                 classes="muted",
             ),
+            Static(self.wallet_line(), classes="wallet"),
             Static(self.notice, classes="notice"),
         ]
         for entry in PET_CATALOG:
             already_adopted = entry["pet_id"] in adopted
+            coin_cost, gem_cost = self.adoption_price(entry)
+            affordable = self.coins >= coin_cost and self.gems >= gem_cost
+            price = f"◉ {coin_cost} coins" + (f"  ◆ {gem_cost} gems" if gem_cost else "")
             widgets.append(
                 Static(
                     f"{entry.get('emoji', '🐾')}  [bold {entry.get('color', '#7ee0b5')}]{entry['name']}[/]  ·  {entry['technology']}\n"
-                    f"[dim]{entry['species']}[/]\n{entry['personality']}",
+                    f"[dim]{entry['species']}[/]\n{entry['personality']}\n"
+                    f"[bold #f4d58d]{price}[/]",
                     classes="catalog-card",
                 )
             )
             widgets.append(
                 Button(
-                    "Already adopted" if already_adopted else f"Adopt {entry['name']}",
+                    "Already adopted" if already_adopted else ("Adopt " + entry["name"] if affordable else "Not enough currency"),
                     id=f"adopt-{entry['pet_id']}",
-                    disabled=already_adopted,
-                    variant="success" if not already_adopted else "default",
+                    disabled=already_adopted or not affordable,
+                    variant="success" if affordable and not already_adopted else "default",
                 )
             )
         return widgets
