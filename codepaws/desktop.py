@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import sys
 import time
-from pathlib import Path
 
 import pygame
 
-from .models import Pet, create_pet
+from .models import create_pet
 from .sprites import _draw
 from .storage import load_economy, load_family, save_economy, save_family
 
@@ -229,7 +228,10 @@ class CodePawsDesktop:
             "bathe": self.pet.bathe,
         }
         if action in messages:
-            messages[action]()
+            result = messages[action]()
+            if action == "play" and "too tired" in result:
+                self.active_action = None
+                return
             self.pet.gain_experience(8)
             self.active_action = action
             self.action_until = time.monotonic() + 2.0
@@ -274,7 +276,8 @@ class CodePawsDesktop:
             now = time.monotonic()
             self.frame = int(now * 7) % 10000
             if now - self.last_tick >= 30:
-                self.pet.pass_time()
+                for companion in self.pets:
+                    companion.pass_time()
                 self.last_tick = now
             if now - self.last_save >= 90:
                 self.save()
