@@ -61,7 +61,7 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 Only languages with an established mascot are included:
 
-| Language | Mascot |
+| Language / tool | Mascot |
 | --- | --- |
 | Python | Py |
 | Rust | Ferris |
@@ -73,7 +73,6 @@ Only languages with an established mascot are included:
 | PHP | ElePHPant |
 | Kotlin | Kodee |
 | Perl | Camel |
-| Kotlin | Kodee |
 
 ## Project status
 
