@@ -31,7 +31,8 @@ CodePaws is an open-source virtual-pet project with a full-screen terminal simul
 ## Requirements
 
 - Python 3.10 or newer
-- A terminal with UTF-8 support
+- A terminal with UTF-8 support for the TUI
+- A desktop environment for the Pygame game
 
 ## Install
 
@@ -53,7 +54,7 @@ To launch the desktop game preview:
 python desktop_game.py
 ```
 
-The application takes over the terminal while it is running. Press **Q** to quit and return to your shell.
+The TUI takes over the terminal while it is running; press **Q** to quit. In the desktop game, press **Esc** or close the window.
 
 ## Keyboard shortcuts
 
