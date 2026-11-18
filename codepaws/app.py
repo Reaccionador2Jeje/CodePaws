@@ -142,6 +142,11 @@ class CodePawsApp(App[None]):
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         button_id = event.button.id or ""
 
+        if button_id == "welcome-adoption":
+            self.page = "adoption"
+            await self.refresh_view()
+            return
+
         if button_id.startswith("nav-"):
             self.page = button_id.removeprefix("nav-")
             await self.refresh_view()
@@ -232,7 +237,7 @@ class CodePawsApp(App[None]):
                     "Visit the Adoption Center to welcome your first friend!",
                 ),
                 Static(self.notice, classes="notice"),
-                Button("Open Adoption Center", id="nav-adoption", variant="success"),
+                Button("Open Adoption Center", id="welcome-adoption", variant="success"),
             ]
 
         return [
@@ -304,7 +309,7 @@ class CodePawsApp(App[None]):
         ]
         if not self.pets:
             widgets.append(Static("Your family album is empty. Adopt your first pet!"))
-            widgets.append(Button("Visit Adoption Center", id="nav-adoption"))
+            widgets.append(Button("Visit Adoption Center", id="welcome-adoption"))
             return widgets
 
         for pet in self.pets:
