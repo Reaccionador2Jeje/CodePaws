@@ -94,7 +94,12 @@ class Pet:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Pet":
-        # Older save files do not contain progression fields.
+        # Migrate mascot display names while keeping existing pet progress.
+        data = dict(data)
+        if data.get("pet_id") == "kotlin":
+            data.update(name="Kodee", species="Kotlin mascot", emoji="🤖", art="🤖")
+        elif data.get("pet_id") == "github" and data.get("name") == "Octocat":
+            data.update(name="Mona", species="Cat-octopus")
         return cls(**data)
 
 
@@ -179,9 +184,9 @@ PET_CATALOG: list[dict[str, str]] = [
     },
     {
         "pet_id": "github",
-        "name": "Octocat",
+        "name": "Mona",
         "technology": "GitHub",
-        "species": "Octocat",
+        "species": "Cat-octopus",
         "personality": "Creative, social and adventurous.",
         "emoji": "🐙",
         "color": "#9b6bd3",
