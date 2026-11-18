@@ -186,6 +186,25 @@ def _draw(pet, frame: int, action: str | None) -> Image.Image:
         smile(20,26,31,34)
         line([(16,39),(14,44)], dark, 3); line([(32,39),(34,44)], dark, 3)
 
+
+    accessory = getattr(pet, "accessory", "none")
+    if accessory == "cap":
+        d.rectangle((15, 4+bob, 33, 8+bob), fill="#e34f65", outline=INK, width=1)
+        d.rectangle((12, 8+bob, 36, 11+bob), fill="#f4d58d", outline=INK, width=1)
+        d.point((19, 5+bob), fill="#ffffff")
+    elif accessory == "bow":
+        d.polygon([(18, 8+bob),(11, 4+bob),(11, 13+bob),(18, 11+bob)], fill="#ff75b5", outline=INK)
+        d.polygon([(19, 8+bob),(27, 4+bob),(27, 13+bob),(19, 11+bob)], fill="#ff75b5", outline=INK)
+        d.rectangle((17, 7+bob, 21, 11+bob), fill="#ffe5f1", outline=INK)
+    elif accessory == "glasses":
+        d.rectangle((13, 20+bob, 22, 26+bob), outline="#8bd5ff", width=2)
+        d.rectangle((27, 20+bob, 36, 26+bob), outline="#8bd5ff", width=2)
+        d.line((22, 22+bob, 27, 22+bob), fill="#8bd5ff", width=2)
+    elif accessory == "crown":
+        d.polygon([(12, 12+bob),(13, 5+bob),(19, 10+bob),(24, 2+bob),(29, 10+bob),(35, 5+bob),(36, 13+bob)], fill="#f4d058", outline=INK)
+        d.rectangle((13, 12+bob, 35, 15+bob), fill="#e6a92e", outline=INK)
+        d.point((24, 7+bob), fill="#ff6b8a")
+
     # Action overlays are deliberately separate from the base character art.
     if action == "sleep":
         d.text((37,2), "Z", fill="#8bd5ff")
