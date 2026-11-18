@@ -66,7 +66,7 @@ def load_family() -> tuple[list[Pet], str | None]:
         return [], None
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-        allowed_pet_ids = {"rust", "go", "java", "php", "kotlin"}
+        allowed_pet_ids = {"python", "rust", "go", "java", "docker", "github", "gitlab", "php", "kotlin", "perl"}
         pets = [
             Pet.from_dict(item)
             for item in payload.get("pets", [])
