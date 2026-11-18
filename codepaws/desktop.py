@@ -23,6 +23,7 @@ ROOMS = [
     ("living", "Living room"),
     ("bedroom", "Bedroom"),
     ("garden", "Garden"),
+    ("bathroom", "Bathroom"),
 ]
 
 
@@ -69,6 +70,7 @@ class CodePawsDesktop:
         self.pet_food_cooldown: dict[str, float] = {}
         self.pet_sleeping_until: dict[str, float] = {}
         self.pet_sleep_cooldown: dict[str, float] = {}
+        self.pet_bath_cooldown: dict[str, float] = {}
         self.pet_motion = {
             pet.pet_id: {
                 "x": 340.0 + (index % 4) * 105,
@@ -152,7 +154,7 @@ class CodePawsDesktop:
         self.label(self.notice[:62], 255, 82, ACCENT, self.small)
 
         for index, (room_id, room_name) in enumerate(ROOMS):
-            rect = pygame.Rect(250 + index * 171, 101, 158, 37)
+            rect = pygame.Rect(250 + index * 130, 101, 122, 37)
             self.button(rect, room_name, f"room:{room_id}", active=self.pet.room == room_id)
 
         world = pygame.Rect(250, 153, 520, 382)
@@ -161,6 +163,8 @@ class CodePawsDesktop:
             wall, floor = (67, 65, 105), (104, 83, 92)
         elif room == "garden":
             wall, floor = (89, 151, 133), (72, 119, 86)
+        elif room == "bathroom":
+            wall, floor = (91, 151, 174), (116, 155, 164)
         else:
             wall, floor = (91, 126, 145), (127, 100, 83)
         pygame.draw.rect(self.screen, wall, world, border_radius=13)
@@ -193,7 +197,7 @@ class CodePawsDesktop:
             pygame.draw.circle(self.screen, (250, 222, 153), (685, 205), 27)
             for x in (290, 700):
                 pygame.draw.circle(self.screen, (247, 224, 161), (x, 180), 3)
-        else:
+        elif room == "garden":
             pygame.draw.circle(self.screen, (248, 217, 132), (680, 205), 34)
             for x, y in ((310, 390), (690, 385), (370, 475), (650, 475)):
                 pygame.draw.rect(self.screen, (63, 96, 67), (x, y, 18, 48),
@@ -202,6 +206,24 @@ class CodePawsDesktop:
                 pygame.draw.circle(self.screen, (118, 184, 120), (x - 5, y + 8), 14)
             for x, y in ((430, 180), (590, 260), (350, 260), (620, 450)):
                 pygame.draw.circle(self.screen, (255, 224, 139), (x, y), 4)
+        else:
+            # Bright tiled bathroom with a deep, blue bathtub.
+            for tx in range(270, 770, 50):
+                pygame.draw.line(self.screen, (133, 188, 203), (tx, 155), (tx, 435), 2)
+            for ty in range(165, 435, 45):
+                pygame.draw.line(self.screen, (133, 188, 203), (250, ty), (770, ty), 2)
+            pygame.draw.rect(self.screen, (225, 236, 239), (555, 325, 160, 105),
+                             border_radius=24)
+            pygame.draw.rect(self.screen, (89, 174, 204), (565, 340, 140, 76),
+                             border_radius=20)
+            pygame.draw.ellipse(self.screen, (198, 235, 242), (565, 326, 140, 32))
+            pygame.draw.circle(self.screen, (240, 250, 250), (610, 340), 5)
+            pygame.draw.circle(self.screen, (240, 250, 250), (655, 340), 5)
+            pygame.draw.rect(self.screen, (225, 236, 239), (300, 200, 92, 58),
+                             border_radius=10)
+            pygame.draw.rect(self.screen, (100, 180, 205), (309, 209, 74, 40),
+                             border_radius=7)
+            self.label("BATH TIME", 310, 270, (235, 250, 252), self.small)
 
         # Shared food bowl placed in this room.
         bowl = self.food_bowls.get(room)
@@ -321,7 +343,7 @@ class CodePawsDesktop:
         self.label(f"◆ {self.economy.get('gems', 0)} gems", 953, 548, TEXT)
         self.label("F / P / S / B  care shortcuts", 824, 623, MUTED, self.small)
         self.label("← →  switch companion", 824, 646, MUTED, self.small)
-        self.label("1 / 2 / 3  change room", 824, 669, MUTED, self.small)
+        self.label("1–4  change room", 824, 669, MUTED, self.small)
 
     def update_pet_motion(self, dt: float, now: float) -> None:
         """Move every adopted companion independently around its own room."""
@@ -344,13 +366,24 @@ class CodePawsDesktop:
                 and companion.energy <= 20
                 and now >= sleep_cooldown
             )
+            bath_cooldown = self.pet_bath_cooldown.get(companion.pet_id, 0.0)
+            seeking_bath = bool(
+                companion.room == "bathroom"
+                and companion.cleanliness <= 20
+                and now >= bath_cooldown
+            )
             if seeking_sleep:
                 motion["target_x"] = 405.0
                 motion["target_y"] = 445.0
                 motion["next_wander"] = now + 12.0
+            elif seeking_bath:
+                motion["target_x"] = 625.0
+                motion["target_y"] = 445.0
+                motion["next_wander"] = now + 12.0
 
             seeking_food = bool(
-                bowl and bowl["servings"] > 0
+                not seeking_sleep and not seeking_bath
+                and bowl and bowl["servings"] > 0
                 and companion.hunger >= 30 and now >= cooldown
             )
             if seeking_food:
@@ -383,6 +416,19 @@ class CodePawsDesktop:
                 self.pet_sleep_cooldown[companion.pet_id] = now + 45.0
                 self.pet_sleeping_until[companion.pet_id] = now + 4.0
                 self.notice = f"{companion.name} is taking a nap."
+                self.save()
+
+            # A companion with low cleanliness visits the bathtub.
+            if (
+                seeking_bath
+                and (motion["x"] - 625.0) ** 2
+                + (motion["y"] - 445.0) ** 2 < 28 ** 2
+            ):
+                companion.bathe()
+                self.pet_bath_cooldown[companion.pet_id] = now + 60.0
+                self.active_action = "bathe"
+                self.action_until = now + 2.0
+                self.notice = f"{companion.name} is fresh and clean!"
                 self.save()
 
             # Reaching the bowl consumes one serving and feeds this companion.
@@ -531,6 +577,9 @@ class CodePawsDesktop:
             elif room == "garden" and (x < 390 or x > 650):
                 self.move_pet_to(520, 466)
                 self.notice = f"{self.pet.name} is exploring the garden."
+            elif room == "bathroom" and 545 <= x <= 725 and 315 <= y <= 435:
+                self.move_pet_to(625, 445)
+                self.notice = f"{self.pet.name} is heading to the bathtub."
 
     def handle_key(self, key: int) -> None:
         shortcuts = {
@@ -547,7 +596,7 @@ class CodePawsDesktop:
             self.page = "adoption"
         elif key == pygame.K_ESCAPE and self.page == "adoption":
             self.page = "home"
-        elif key in (pygame.K_1, pygame.K_2, pygame.K_3):
+        elif key in (pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4):
             self.pet.room = ROOMS[key - pygame.K_1][0]
             self.save()
 
