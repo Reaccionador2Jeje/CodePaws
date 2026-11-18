@@ -75,7 +75,7 @@ class CodePawsApp(App[None]):
         color: #e8f1f2;
         content-align: center middle;
         height: auto;
-        min-height: 17;
+        min-height: 26;
         width: 1fr;
         border: round #42616d;
         margin: 1 0;
@@ -482,7 +482,7 @@ class CodePawsApp(App[None]):
     def build_about_page(self) -> list:
         return [
             Static("ABOUT CODEPAWS", classes="page-title"),
-            Static("CodePaws 0.5.0 — Your Programming Family"),
+            Static("CodePaws 0.5.2 — Your Programming Family"),
             Static(
                 "A full-screen terminal pet simulator where programming "
                 "languages, tools and platforms become digital companions."
