@@ -7,7 +7,8 @@ CodePaws is a full-screen terminal virtual-pet simulator. Adopt mascots inspired
 ## Features
 
 - Full-screen TUI powered by [Textual](https://textual.textualize.io/).
-- Colorful, modern mascot cards with emoji visuals and individual accent colors.
+- Real 32×32 pixel-art mascots rendered with terminal true-color pixels.
+- Animated idle bobbing, blinking and care-action effects.
 - Adopt 16 mascots: Python, Rust, Go, Java, Docker, GitHub, GitLab, PHP, JavaScript, TypeScript, Ruby, C, C++, Kotlin, Swift and Perl.
 - Feed, play with, let sleep, and bathe your pets.
 - Happiness, energy, hunger and cleanliness statistics.
@@ -74,7 +75,7 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Project status
 
-**Version 0.5.0** — Pet experience, levels and progression, alongside the coin-and-gem economy.
+**Version 0.5.1** — Pet experience, levels and progression, alongside the coin-and-gem economy.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
