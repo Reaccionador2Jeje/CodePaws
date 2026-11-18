@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import random
 import sys
 import time
 
@@ -52,6 +53,13 @@ class CodePawsDesktop:
         self.buttons: list[tuple[pygame.Rect, str, str]] = []
         self.page = "home"
         self.notice = "Welcome home! Take good care of your friends."
+        # World-space position and destination for the selected companion.
+        self.pet_x = 510.0
+        self.pet_y = 468.0
+        self.target_x = self.pet_x
+        self.target_y = self.pet_y
+        self.next_wander = time.monotonic() + 2.0
+        self.facing_left = False
 
     @property
     def pet(self) -> Pet:
@@ -121,6 +129,7 @@ class CodePawsDesktop:
     def draw_room(self) -> None:
         self.label("Your little home", 253, 29, TEXT, self.title)
         self.label("A cozy place for your programming family", 255, 65, MUTED, self.small)
+        self.label(self.notice[:62], 255, 82, ACCENT, self.small)
 
         for index, (room_id, room_name) in enumerate(ROOMS):
             rect = pygame.Rect(250 + index * 171, 101, 158, 37)
@@ -174,15 +183,20 @@ class CodePawsDesktop:
             for x, y in ((430, 180), (590, 260), (350, 260), (620, 450)):
                 pygame.draw.circle(self.screen, (255, 224, 139), (x, y), 4)
 
-        # Pet shadow and nearest-neighbour pixel sprite.
-        pygame.draw.ellipse(self.screen, (48, 57, 62), (468, 444, 110, 24))
+        # Companion wanders freely around the room's walkable floor.
+        pygame.draw.ellipse(
+            self.screen, (48, 57, 62),
+            (int(self.pet_x - 43), int(self.pet_y - 9), 86, 19),
+        )
         action = self.active_action if time.monotonic() < self.action_until else None
         sprite = _draw(self.pet, self.frame, action)
         pet_surface = pygame.image.fromstring(sprite.tobytes(), sprite.size, "RGB")
-        pet_surface = pygame.transform.scale(pet_surface, (192, 192))
-        self.screen.blit(pet_surface, (427, 265))
-        self.label(self.pet.name, 477, 500, TEXT, self.heading)
-        self.label(self.pet.mood, 477, 530, MUTED, self.small)
+        pet_surface = pygame.transform.scale(pet_surface, (144, 144))
+        if self.facing_left:
+            pet_surface = pygame.transform.flip(pet_surface, True, False)
+        self.screen.blit(pet_surface, (int(self.pet_x - 72), int(self.pet_y - 139)))
+        self.label(self.pet.name, int(self.pet_x - 35), int(self.pet_y + 2), TEXT, self.heading)
+        self.label(self.pet.mood, int(self.pet_x - 25), int(self.pet_y + 31), MUTED, self.small)
 
         actions = [
             ("Feed", "feed", (250, 590)),
@@ -247,6 +261,30 @@ class CodePawsDesktop:
         self.label("← →  switch companion", 824, 646, MUTED, self.small)
         self.label("1 / 2 / 3  change room", 824, 669, MUTED, self.small)
 
+    def update_pet_motion(self, dt: float, now: float) -> None:
+        """Move the companion smoothly and choose a new idle destination."""
+        if self.page != "home":
+            return
+        if now >= self.next_wander and abs(self.pet_x - self.target_x) < 5:
+            self.target_x = random.uniform(320, 710)
+            self.target_y = random.uniform(452, 493)
+            self.next_wander = now + random.uniform(2.0, 4.5)
+
+        dx = self.target_x - self.pet_x
+        dy = self.target_y - self.pet_y
+        distance = (dx * dx + dy * dy) ** 0.5
+        if distance > 1:
+            speed = min(distance, 78 * dt)
+            self.pet_x += dx / distance * speed
+            self.pet_y += dy / distance * speed
+            self.facing_left = dx < 0
+
+    def move_pet_to(self, x: float, y: float) -> None:
+        """Send the selected pet to a point on the room floor."""
+        self.target_x = max(320.0, min(710.0, x))
+        self.target_y = max(452.0, min(493.0, y))
+        self.next_wander = time.monotonic() + 3.0
+
     def act(self, action: str) -> None:
         messages = {
             "feed": self.pet.feed,
@@ -298,7 +336,25 @@ class CodePawsDesktop:
                             self.notice = "You need more coins to adopt this friend."
                 elif key.startswith("action:"):
                     self.act(key.split(":", 1)[1])
-                break
+                return
+
+        # Clicking the room floor gives the companion a destination.
+        x, y = position
+        if self.page == "home" and 250 <= x <= 770 and 435 <= y <= 535:
+            self.move_pet_to(x, y)
+            self.notice = f"{self.pet.name} is exploring the room."
+        # Clicking room objects sends the pet over for a little visit.
+        elif self.page == "home" and 250 <= x <= 770 and 153 <= y <= 435:
+            room = self.pet.room
+            if room == "living" and 275 <= x <= 460 and 315 <= y <= 420:
+                self.move_pet_to(380, 466)
+                self.notice = f"{self.pet.name} is visiting the sofa."
+            elif room == "bedroom" and 280 <= x <= 500 and 320 <= y <= 430:
+                self.move_pet_to(420, 466)
+                self.notice = f"{self.pet.name} is visiting the bed."
+            elif room == "garden" and (x < 390 or x > 650):
+                self.move_pet_to(520, 466)
+                self.notice = f"{self.pet.name} is exploring the garden."
 
     def handle_key(self, key: int) -> None:
         shortcuts = {
@@ -322,7 +378,9 @@ class CodePawsDesktop:
     def run(self) -> None:
         while self.running:
             now = time.monotonic()
+            dt = min(self.clock.get_time() / 1000.0, 0.05)
             self.frame = int(now * 7) % 10000
+            self.update_pet_motion(dt, now)
             if now - self.last_tick >= 30:
                 for companion in self.pets:
                     companion.pass_time()
