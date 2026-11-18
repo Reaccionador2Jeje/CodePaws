@@ -86,6 +86,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Python",
         "species": "Programming snake",
         "personality": "Curious, friendly and a little sleepy.",
+        "emoji": "🐍",
+        "color": "#4caf50",
         "art": r"""
   /^\/^\\
  _|  o.o  |_
@@ -99,6 +101,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Rust",
         "species": "Rustacean crab",
         "personality": "Brave, energetic and protective.",
+        "emoji": "🦀",
+        "color": "#f05a47",
         "art": r"""
   .-'''-.
  /  o o  \
@@ -113,6 +117,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Go",
         "species": "Gopher",
         "personality": "Quick, helpful and hardworking.",
+        "emoji": "🐹",
+        "color": "#48a9e6",
         "art": r"""
   .-'''-.
  /  o o  \
@@ -127,6 +133,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Java",
         "species": "Java mascot",
         "personality": "Calm, dependable and elegant.",
+        "emoji": "☕",
+        "color": "#e07b39",
         "art": r"""
    .---.
   /     \
@@ -141,6 +149,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Docker",
         "species": "Container whale",
         "personality": "Gentle, big-hearted and always carrying friends.",
+        "emoji": "🐳",
+        "color": "#249bd3",
         "art": r"""
       __
  ___ /  \___
@@ -154,6 +164,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "GitHub",
         "species": "Octocat",
         "personality": "Creative, social and adventurous.",
+        "emoji": "🐙",
+        "color": "#9b6bd3",
         "art": r"""
  /\\_/\\
 ( o   o )
@@ -168,6 +180,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "GitLab",
         "species": "Tanuki",
         "personality": "Organized, clever and collaborative.",
+        "emoji": "🦝",
+        "color": "#f28c45",
         "art": r"""
  /\   /\\
 (  o o  )
@@ -176,7 +190,7 @@ PET_CATALOG: list[dict[str, str]] = [
   /   \
 """.strip("\n"),
     },
-        {
+    {
         "pet_id": "php",
         "name": "ElePHPant",
         "technology": "PHP",
