@@ -67,13 +67,16 @@ class CodePawsApp(App[None]):
     .muted {
         color: #91a8b2;
     }
-    .pet-art {
+    #pet-stage {
         color: #7ee0b5;
         text-style: bold;
         content-align: center middle;
-        height: 7;
+        height: 1fr;
+        min-height: 17;
+        width: 1fr;
         border: round #31515b;
         margin: 1 0;
+        padding: 1 2;
     }
     .stat {
         margin: 0 0 1 0;
@@ -112,6 +115,37 @@ class CodePawsApp(App[None]):
         self.pets, self.selected_pet_id = load_family()
         self.page = "home"
         self.notice = "Welcome home! Your programming family starts here."
+        self.animation_frame = 0
+        self.animation_frames = {
+            "python": [
+                r"       /^\\_/^\\\n      /  o o  \\\n     ( ==  ^  == )\n      )       (\n     (         )\n    (___________)",
+                r"       /^\\_/^\\\n      /  - -  \\\n     ( ==  w  == )\n      )       (\n     (         )\n    (___________)",
+            ],
+            "rust": [
+                r"       .-''''-.\n    .-'  o  o  '-.\n   /      ^       \\\n  |   \\  ___  /   |\n   \\   '-----'   /\n    '-._______ .-'\n      /  / \\  \\\n     /__/   \\__\\",
+                r"       .-''''-.\n    .-'  ^  ^  '-.\n   /      w       \\\n  |   \\  ___  /   |\n   \\   '-----'   /\n    '-._______ .-'\n      /  / \\  \\\n     /__/   \\__\\",
+            ],
+            "go": [
+                r"        .------.\n      .'  o  o  '.\n     /     __     \\\n    |    .'  '.    |\n    |   |  \\/  |   |\n     \\   '----'   /\n      '._      _.'\n         '----'",
+                r"        .------.\n      .'  -  -  '.\n     /     ww     \\\n    |    .'  '.    |\n    |   |  \\/  |   |\n     \\   '----'   /\n      '._      _.'\n         '----'",
+            ],
+            "java": [
+                r"          .-======-.\n        .'  .--.    '.\n       /   /    \\    \\\n      |   |  o  o |    |\n      |   |   ^   |    |\n       \\   \\____/   /\n        '.        .'\n          '-.__.-'",
+                r"          .-======-.\n        .'  .--.    '.\n       /   /    \\    \\\n      |   |  -  - |    |\n      |   |   w   |    |\n       \\   \\____/   /\n        '.        .'\n          '-.__.-'",
+            ],
+            "docker": [
+                r"             ______________\n       _____/  []  []  []   \\____\n   ___/   []  []  []  []          \\\n  /   _     _                 ____  )\n  \\_/ \\___/ \\_______________/   \\/\n       \\_________________________/\n          ~  ~  ~  ~  ~  ~",
+                r"             ______________\n       _____/  []  []  []   \\____\n   ___/   []  []  []  []          \\\n  /   ^     ^                 ____  )\n  \\_/ \\___/ \\_______________/   \\/\n       \\_________________________/\n          ~  ~  ~  ~  ~  ~",
+            ],
+            "github": [
+                r"          /\\     /\\\n         /  \\___/  \\\n        /   o     o   \\\n       |      ___      |\n       |    .'   '.    |\n        \\  /  ___  \\  /\n         \\|  /   \\  |/\n          /| |     | |\\\n         /_|_|     |_|_\\",
+                r"          /\\     /\\\n         /  \\___/  \\\n        /   -     -   \\\n       |      w        |\n       |    .'   '.    |\n        \\  /  ___  \\  /\n         \\|  /   \\  |/\n          /| |     | |\\\n         /_|_|     |_|_\\",
+            ],
+            "gitlab": [
+                r"          /\\       /\\\n         /   \\_____/  \\\n        /   .-     -.   \\\n       |   /  o   o  \\   |\n       |  |     ^     |  |\n        \\  \\  ___  /  /\n         '._'-----'_. '\n            /|   |\\\n           /_|___|_\\",
+                r"          /\\       /\\\n         /   \\_____/  \\\n        /   .-     -.   \\\n       |   /  -   -  \\   |\n       |  |     w     |  |\n        \\  \\  ___  /  /\n         '._'-----'_. '\n            /|   |\\\n           /_|___|_\\",
+            ],
+        }
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -133,6 +167,7 @@ class CodePawsApp(App[None]):
 
     async def on_mount(self) -> None:
         self.set_interval(60, self.pass_time)
+        self.set_interval(0.65, self.animate_pet)
         await self.refresh_view()
 
     def action_show_page(self, page: str) -> None:
@@ -204,6 +239,21 @@ class CodePawsApp(App[None]):
     def persist(self) -> None:
         save_family(self.pets, self.selected_pet_id)
 
+    def animate_pet(self) -> None:
+        """Advance the selected mascot's ASCII animation without rebuilding the UI."""
+        pet = self.selected_pet
+        if pet is None or self.page != "home":
+            return
+        frames = self.animation_frames.get(pet.pet_id)
+        if not frames:
+            return
+        self.animation_frame = (self.animation_frame + 1) % len(frames)
+        try:
+            self.query_one("#pet-stage", Static).update(frames[self.animation_frame])
+        except Exception:
+            # The home screen may be transitioning between pages.
+            pass
+
     def pass_time(self) -> None:
         if not self.pets:
             return
@@ -244,7 +294,11 @@ class CodePawsApp(App[None]):
             Static("YOUR LITTLE HOME", classes="page-title"),
             Static(self.notice, classes="notice"),
             Static(f"Meet {pet.name}  ·  {pet.technology}", classes="page-title"),
-            Static(pet.art, classes="pet-art", markup=False),
+            Static(
+                self.current_pet_art(pet),
+                id="pet-stage",
+                markup=False,
+            ),
             Static(f"{pet.species}  |  Mood: {pet.mood}"),
             Static(pet.personality, classes="muted"),
             Static(self.stat_line("Happiness", pet.happiness), classes="stat"),
@@ -265,6 +319,12 @@ class CodePawsApp(App[None]):
                 classes="muted",
             ),
         ]
+
+    def current_pet_art(self, pet: Pet) -> str:
+        frames = self.animation_frames.get(pet.pet_id)
+        if frames:
+            return frames[self.animation_frame % len(frames)]
+        return pet.art
 
     @staticmethod
     def stat_line(label: str, value: int) -> str:
