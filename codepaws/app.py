@@ -72,9 +72,9 @@ class CodePawsApp(App[None]):
         text-style: bold;
         content-align: center middle;
         height: 1fr;
-        min-height: 17;
+        min-height: 23;
         width: 1fr;
-        border: round #31515b;
+        border: double #7ee0b5;
         margin: 1 0;
         padding: 1 2;
     }
@@ -333,7 +333,9 @@ class CodePawsApp(App[None]):
             return
         self.animation_frame = (self.animation_frame + 1) % len(frames)
         try:
-            self.query_one("#pet-stage", Static).update(frames[self.animation_frame])
+            self.query_one("#pet-stage", Static).update(
+                self.scale_ascii(frames[self.animation_frame])
+            )
         except Exception:
             # The home screen may be transitioning between pages.
             pass
@@ -406,9 +408,21 @@ class CodePawsApp(App[None]):
 
     def current_pet_art(self, pet: Pet) -> str:
         frames = self.animation_frames.get(pet.pet_id)
-        if frames:
-            return frames[self.animation_frame % len(frames)]
-        return pet.art
+        art = (
+            frames[self.animation_frame % len(frames)]
+            if frames
+            else pet.art
+        )
+        return self.scale_ascii(art)
+
+    @staticmethod
+    def scale_ascii(art: str) -> str:
+        """Make each mascot feel like a large centerpiece in the terminal."""
+        enlarged_lines = []
+        for line in art.splitlines():
+            wide_line = "".join(character * 2 for character in line)
+            enlarged_lines.extend((wide_line, wide_line))
+        return "\n".join(enlarged_lines)
 
     @staticmethod
     def stat_line(label: str, value: int) -> str:
