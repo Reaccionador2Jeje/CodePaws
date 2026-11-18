@@ -66,7 +66,12 @@ def load_family() -> tuple[list[Pet], str | None]:
         return [], None
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
-        pets = [Pet.from_dict(item) for item in payload.get("pets", [])]
+        allowed_pet_ids = {"rust", "go", "java", "php", "kotlin"}
+        pets = [
+            Pet.from_dict(item)
+            for item in payload.get("pets", [])
+            if item.get("pet_id") in allowed_pet_ids
+        ]
         selected = payload.get("selected_pet")
         if selected not in {pet.pet_id for pet in pets}:
             selected = pets[0].pet_id if pets else None
