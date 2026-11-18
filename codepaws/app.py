@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import time
+
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Button, Footer, Header, Static
@@ -132,6 +134,7 @@ class CodePawsApp(App[None]):
         self.coins = 120
         self.gems = 2
         self.gem_milestones: set[int] = set()
+        self.last_coin_reward = 0.0
         self.load_economy()
         self.page = "home"
         self.notice = "Welcome home! Your programming family starts here."
@@ -231,10 +234,13 @@ class CodePawsApp(App[None]):
             before = (pet.happiness, pet.energy, pet.hunger, pet.cleanliness)
             self.notice = callback()
             after = (pet.happiness, pet.energy, pet.hunger, pet.cleanliness)
-            if before != after:
+            if before != after and time.monotonic() - self.last_coin_reward >= 10:
                 earned = {"feed": 5, "play": 8, "sleep": 3, "bath": 4}[action]
                 self.coins += earned
+                self.last_coin_reward = time.monotonic()
                 self.notice += f"  (+{earned} coins)"
+            elif before != after:
+                self.notice += "  (Coin reward cooldown: wait a few seconds.)"
             self.active_action = action
             self.action_ticks = 10
 
