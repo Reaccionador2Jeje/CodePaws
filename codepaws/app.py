@@ -126,6 +126,7 @@ class CodePawsApp(App[None]):
         ("h", "show_page('home')", "Home"),
         ("a", "show_page('adoption')", "Adopt"),
         ("f", "show_page('family')", "Family"),
+        ("r", "show_page('house')", "House"),
         ("q", "quit", "Quit"),
     ]
 
