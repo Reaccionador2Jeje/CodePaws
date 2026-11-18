@@ -1,0 +1,171 @@
+"""Pet models and the adoption catalog."""
+
+from dataclasses import asdict, dataclass
+from typing import Any
+
+
+@dataclass
+class Pet:
+    pet_id: str
+    name: str
+    technology: str
+    species: str
+    personality: str
+    art: str
+    happiness: int = 80
+    energy: int = 75
+    hunger: int = 20
+    cleanliness: int = 90
+
+    def clamp(self) -> None:
+        for field in ("happiness", "energy", "hunger", "cleanliness"):
+            setattr(self, field, max(0, min(100, getattr(self, field))))
+
+    @property
+    def mood(self) -> str:
+        if self.hunger >= 80:
+            return "Hungry"
+        if self.energy <= 20:
+            return "Sleepy"
+        if self.cleanliness <= 20:
+            return "Needs a bath"
+        if self.happiness >= 80:
+            return "Very happy"
+        if self.happiness <= 30:
+            return "A little sad"
+        return "Happy"
+
+    def feed(self) -> str:
+        self.hunger -= 25
+        self.happiness += 4
+        self.clamp()
+        return f"{self.name} enjoyed the snack!"
+
+    def play(self) -> str:
+        if self.energy < 15:
+            return f"{self.name} is too tired to play right now."
+        self.happiness += 18
+        self.energy -= 15
+        self.hunger += 10
+        self.clamp()
+        return f"{self.name} had a lovely playtime!"
+
+    def sleep(self) -> str:
+        self.energy += 35
+        self.hunger += 5
+        self.clamp()
+        return f"{self.name} had a refreshing nap."
+
+    def bathe(self) -> str:
+        self.cleanliness = 100
+        self.happiness += 5
+        self.clamp()
+        return f"{self.name} is all clean!"
+
+    def pass_time(self) -> None:
+        self.hunger += 2
+        self.energy -= 1
+        self.cleanliness -= 1
+        self.happiness -= 1
+        self.clamp()
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any]) -> "Pet":
+        return cls(**data)
+
+
+PET_CATALOG: list[dict[str, str]] = [
+    {
+        "pet_id": "python",
+        "name": "Py",
+        "technology": "Python",
+        "species": "Programming snake",
+        "personality": "Curious, friendly and a little sleepy.",
+        "art": r"  /^\/^\\
+ _|  o.o  |_
+   \  ^  /
+    |||||",
+    },
+    {
+        "pet_id": "rust",
+        "name": "Ferris",
+        "technology": "Rust",
+        "species": "Rustacean crab",
+        "personality": "Brave, energetic and protective.",
+        "art": r"  .-"""-.
+ /  o o  \\
+|    ^    |
+ \\  ---  /
+  '-----'",
+    },
+    {
+        "pet_id": "go",
+        "name": "Gopher",
+        "technology": "Go",
+        "species": "Gopher",
+        "personality": "Quick, helpful and hardworking.",
+        "art": r"  .-"""-.
+ /  o o  \\
+|    w    |
+|  _____  |
+ '-------'",
+    },
+    {
+        "pet_id": "java",
+        "name": "Duke",
+        "technology": "Java",
+        "species": "Java mascot",
+        "personality": "Calm, dependable and elegant.",
+        "art": r"   .---.
+  /     \\
+ |  o o  |
+ |   ^   |
+  \_____/ ",
+    },
+    {
+        "pet_id": "docker",
+        "name": "Moby",
+        "technology": "Docker",
+        "species": "Container whale",
+        "personality": "Gentle, big-hearted and always carrying friends.",
+        "art": r"      __
+ ___ /  \\___
+/  _| [] []  \\
+\____________/",
+    },
+    {
+        "pet_id": "github",
+        "name": "Octocat",
+        "technology": "GitHub",
+        "species": "Octocat",
+        "personality": "Creative, social and adventurous.",
+        "art": r" /\\_/\\
+( o   o )
+ /  ^  \\
+/|     |\\
+ \_____/ ",
+    },
+    {
+        "pet_id": "gitlab",
+        "name": "Tanuki",
+        "technology": "GitLab",
+        "species": "Tanuki",
+        "personality": "Organized, clever and collaborative.",
+        "art": r" /\   /\\
+(  o o  )
+(   ^   )
+ /|___|\\
+  /   \\",
+    },
+]
+
+
+def create_pet(pet_id: str) -> Pet:
+    """Create a fresh pet from the adoption catalog."""
+    entry = next((item for item in PET_CATALOG if item["pet_id"] == pet_id), None)
+    if entry is None:
+        raise ValueError(f"Unknown pet: {pet_id}")
+    return Pet(**entry)
