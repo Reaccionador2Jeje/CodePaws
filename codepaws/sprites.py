@@ -1,8 +1,7 @@
-"""Friendly, recognizable pixel-art programming mascots for CodePaws.
+"""Reference-informed, friendly pixel-art companions for CodePaws.
 
-Each mascot has its own silhouette and details. The designs are fan-made
-interpretations; where a technology has no official character, CodePaws
-uses an original friendly companion.
+The sprites are original small-scale interpretations of the visual references
+listed in docs/mascot-references.md. They are not copied source artwork.
 """
 from __future__ import annotations
 
@@ -12,7 +11,7 @@ from rich.text import Text
 
 SIZE = 48
 BACKGROUND = "#172630"
-INK = "#20313b"
+INK = "#17212b"
 WHITE = "#fff7e8"
 
 
@@ -25,256 +24,290 @@ def _draw(pet, frame: int, action: str | None) -> Image.Image:
     image = Image.new("RGBA", (SIZE, SIZE), BACKGROUND)
     layer = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
-    pid, c = pet.pet_id, pet.color
+    pid = pet.pet_id
+    c = pet.color
     hi, mid, dark = _shade(c, 1.22), _shade(c, .82), _shade(c, .56)
     bob = 1 if action != "sleep" and frame % 8 in (1, 2, 3, 4) else 0
     step = (frame // 3) % 2
     sleepy = action == "sleep" or frame % 42 in (0, 1)
 
-    def shift(points):
-        return [(x, y + bob) for x, y in points]
-    def poly(points, fill, outline=INK, width=2):
-        d.polygon(shift(points), fill=fill, outline=outline, width=width)
     def oval(box, fill, outline=INK, width=2):
-        x1,y1,x2,y2=box
-        d.ellipse((x1,y1+bob,x2,y2+bob), fill=fill, outline=outline, width=width)
-    def rect(box, fill, outline=INK, width=2):
-        x1,y1,x2,y2=box
-        d.rounded_rectangle((x1,y1+bob,x2,y2+bob), radius=2, fill=fill, outline=outline, width=width)
-    def line(points, fill=INK, width=2):
-        d.line(shift(points), fill=fill, width=width, joint="curve")
-    def eye(x, y, closed=False):
-        if closed or sleepy:
-            line([(x-2,y),(x+2,y)], INK, 2)
-        else:
-            oval((x-2,y-3,x+2,y+3), WHITE, INK, 1)
-            d.point((x+1,y+bob), fill=INK)
-    def smile(box=(20,27,29,33)):
-        d.arc((box[0],box[1]+bob,box[2],box[3]+bob), 5, 165, fill=INK, width=2)
+        x1, y1, x2, y2 = box
+        d.ellipse((x1, y1 + bob, x2, y2 + bob), fill=fill, outline=outline, width=width)
 
-    d.ellipse((7,43,41,47), fill=(4,9,13,115))
+    def rect(box, fill, outline=INK, width=2, radius=2):
+        x1, y1, x2, y2 = box
+        d.rounded_rectangle((x1, y1 + bob, x2, y2 + bob), radius=radius,
+                            fill=fill, outline=outline, width=width)
+
+    def poly(points, fill, outline=INK, width=2):
+        d.polygon([(x, y + bob) for x, y in points], fill=fill, outline=outline, width=width)
+
+    def line(points, fill=INK, width=2):
+        d.line([(x, y + bob) for x, y in points], fill=fill, width=width, joint="curve")
+
+    def eye(x, y, closed=False, color=WHITE):
+        if closed or sleepy:
+            line([(x - 2, y), (x + 2, y)], INK, 2)
+        else:
+            oval((x - 2, y - 3, x + 2, y + 3), color, INK, 1)
+            d.point((x + 1, y + bob), fill=INK)
+
+    def smile(box=(20, 27, 29, 33)):
+        d.arc((box[0], box[1] + bob, box[2], box[3] + bob),
+              5, 165, fill=INK, width=2)
+
+    d.ellipse((7, 43, 41, 47), fill=(4, 9, 13, 115))
 
     if pid == "python":
-        # Two friendly intertwined Python snakes: blue and golden yellow.
-        line([(8,34),(13,38),(21,38),(27,33),(24,28),(17,27),(13,23),(16,18),(23,17),(29,21)], "#ffd343", 8)
-        line([(8,34),(13,38),(21,38),(27,33),(24,28),(17,27),(13,23),(16,18),(23,17),(29,21)], "#ffd343", 5)
-        line([(40,34),(35,38),(27,38),(21,33),(24,28),(31,27),(35,23),(32,18),(25,17),(19,21)], "#4584b6", 8)
-        line([(40,34),(35,38),(27,38),(21,33),(24,28),(31,27),(35,23),(32,18),(25,17),(19,21)], "#4584b6", 5)
-        oval((21,7,34,20), "#ffd343"); oval((14,7,27,20), "#4584b6")
-        oval((23,11,32,18), "#ffe36c", width=1); oval((16,11,25,18), "#6da7d0", width=1)
-        eye(27,13); eye(20,13)
-        d.point((31,16+bob), fill=INK); d.point((17,16+bob), fill=INK)
-        # Tiny forked tongues.
-        line([(33,18),(37,20),(39,18)], "#f28b8b", 1)
-        line([(14,18),(10,20),(8,18)], "#f28b8b", 1)
+        # Python's blue/yellow interlocking snake mark, adapted into two heads.
+        line([(9, 32), (9, 25), (14, 21), (21, 21), (25, 25), (25, 30),
+              (30, 34), (37, 34)], "#ffd343", 8)
+        line([(9, 32), (9, 25), (14, 21), (21, 21), (25, 25), (25, 30),
+              (30, 34), (37, 34)], "#ffd343", 5)
+        line([(39, 16), (39, 23), (34, 27), (27, 27), (23, 23), (23, 18),
+              (18, 14), (11, 14)], "#4584b6", 8)
+        line([(39, 16), (39, 23), (34, 27), (27, 27), (23, 23), (23, 18),
+              (18, 14), (11, 14)], "#4584b6", 5)
+        rect((5, 8, 21, 19), "#4584b6", "#244e70", 2, 4)
+        rect((27, 29, 43, 40), "#ffd343", "#9b7822", 2, 4)
+        oval((9, 11, 12, 14), WHITE, INK, 1)
+        oval((31, 32, 34, 35), WHITE, INK, 1)
+        d.point((11, 12 + bob), fill=INK)
+        d.point((33, 33 + bob), fill=INK)
 
     elif pid == "rust":
-        # Ferris, the cheerful orange Rust crab.
-        oval((11,16,37,37), c)
-        oval((14,18,34,34), hi, width=1)
-        line([(12,25),(7,22),(5,16)], dark, 4)
-        line([(36,25),(41,22),(43,16)], dark, 4)
-        poly([(4,17),(2,12),(5,8),(9,12),(12,8),(13,14),(10,19)], c)
-        poly([(42,17),(40,12),(43,8),(46,12),(47,8),(47,16),(44,19)], c)
-        for x in (15,21,27,33):
-            off=2 if (x//3+step)%2 else 0
-            line([(x,34),(x-3,39+off),(x-4,42+off)], dark, 3)
-        eye(20,25); eye(29,25); smile((21,27,29,33))
-        line([(17,20),(22,18),(27,18)], "#ffb39e", 2)
+        # Ferris: orange crab with a broad spiky shell and raised pincers.
+        oval((10, 17, 38, 37), "#f05a28")
+        poly([(11, 24), (9, 16), (13, 18), (15, 10), (20, 15),
+              (24, 7), (28, 15), (34, 10), (34, 19), (39, 17), (37, 27)],
+             "#f05a28", "#a63d1f", 2)
+        oval((14, 20, 34, 34), "#ff7b43", width=1)
+        line([(12, 25), (7, 21), (5, 15)], "#b94725", 4)
+        line([(36, 25), (41, 21), (43, 15)], "#b94725", 4)
+        poly([(3, 16), (2, 10), (6, 7), (10, 12), (13, 7), (14, 15), (10, 19)], "#f05a28")
+        poly([(40, 16), (39, 10), (43, 7), (46, 12), (47, 7), (47, 16), (44, 19)], "#f05a28")
+        for x in (14, 20, 27, 33):
+            off = 2 if (x // 3 + step) % 2 else 0
+            line([(x, 34), (x - 3, 39 + off), (x - 4, 42 + off)], "#b94725", 3)
+        eye(20, 25); eye(29, 25); smile((21, 27, 29, 33))
+        line([(17, 20), (22, 18), (27, 18)], "#ffbd9f", 2)
 
     elif pid == "go":
-        # Go Gopher: round blue body, large ears and two unmistakable teeth.
-        oval((9,13,39,42), c)
-        oval((5,5,20,21), hi); oval((28,5,43,21), hi)
-        oval((10,15,38,39), "#b9e2f5", width=1)
-        oval((15,20,33,34), "#e9f5fb", width=1)
-        eye(20,24); eye(29,24)
-        oval((22,28,27,32), "#d98e9b", INK, 1)
-        rect((21,32,25,37), WHITE, INK, 1); rect((26,32,30,37), WHITE, INK, 1)
-        oval((6,29,13,36), hi, width=1); oval((35,29,42,36), hi, width=1)
-        line([(16,41),(15,44)], dark, 3); line([(32,41),(33,44)], dark, 3)
+        # Go Gopher: upright blue body, round ears, huge eyes and two teeth.
+        oval((9, 12, 39, 43), "#79d2e5", "#244b60", 2)
+        oval((4, 5, 20, 22), "#79d2e5", "#244b60", 2)
+        oval((28, 5, 44, 22), "#79d2e5", "#244b60", 2)
+        oval((8, 12, 17, 20), "#b4e9f1", width=1)
+        oval((31, 12, 40, 20), "#b4e9f1", width=1)
+        oval((12, 16, 36, 37), "#a5e3ed", width=1)
+        oval((13, 19, 23, 30), WHITE, INK, 1)
+        oval((25, 19, 35, 30), WHITE, INK, 1)
+        d.ellipse((17, 22 + bob, 21, 27 + bob), fill=INK)
+        d.ellipse((27, 22 + bob, 31, 27 + bob), fill=INK)
+        oval((20, 29, 28, 34), "#d7a17d", INK, 1)
+        rect((20, 33, 24, 39), WHITE, INK, 1, 1)
+        rect((25, 33, 29, 39), WHITE, INK, 1, 1)
+        line([(10, 31), (5, 34), (5, 38)], "#f0c59f", 3)
+        line([(38, 31), (43, 34), (43, 38)], "#f0c59f", 3)
+        line([(17, 42), (15, 45)], "#f0c59f", 3)
+        line([(31, 42), (33, 45)], "#f0c59f", 3)
 
     elif pid == "java":
-        # Duke: white, soft-edged little Java mascot with red nose and blue limbs.
-        oval((14,8,34,31), WHITE, "#b8c7d0", 2)
-        poly([(17,29),(31,29),(36,39),(12,39)], "#4d8cc9")
-        line([(16,33),(8,39),(6,36)], "#4d8cc9", 4)
-        line([(32,33),(40,39),(42,36)], "#4d8cc9", 4)
-        line([(19,38),(17,44)], "#4d8cc9", 4); line([(29,38),(31,44)], "#4d8cc9", 4)
-        eye(21,19); eye(29,19)
-        oval((23,22,28,27), "#e94c55", "#b8323b", 1)
-        line([(19,13),(24,11),(29,13)], "#d7e0e5", 1)
+        # Duke: white body, pointed dark head, bright red nose and akimbo arms.
+        poly([(14, 19), (18, 8), (24, 3), (30, 8), (34, 19),
+              (34, 34), (29, 41), (19, 41), (14, 34)], WHITE, INK, 2)
+        poly([(17, 19), (19, 8), (24, 2), (29, 8), (32, 19)], "#202027", "#11151b", 2)
+        oval((19, 17, 30, 29), "#fffdf7", "#c9c9c9", 1)
+        oval((21, 18, 29, 26), "#c8103e", "#72112d", 1)
+        oval((23, 19, 26, 22), WHITE, WHITE, 1)
+        line([(15, 25), (9, 29), (7, 26)], INK, 4)
+        line([(33, 25), (39, 29), (41, 26)], INK, 4)
+        line([(19, 39), (16, 44)], INK, 4)
+        line([(29, 39), (32, 44)], INK, 4)
 
     elif pid == "docker":
-        # Moby: whale body, tail flukes and the familiar container stack.
-        poly([(5,25),(10,20),(34,20),(41,24),(44,31),(39,38),(17,40),(8,35)], c)
-        poly([(8,26),(13,22),(34,22),(39,26),(40,32),(34,36),(17,37),(10,33)], hi, width=1)
-        poly([(8,27),(2,21),(3,32),(11,37)], dark)
-        for x,h in ((12,7),(19,10),(26,7),(33,4)):
-            rect((x,19-h,x+6,19), "#e9f5fb", "#2d729c", 1)
-            line([(x+2,17-h),(x+4,17-h)], "#9bc8df", 1)
-        eye(35,27); smile((29,29,37,34))
-        poly([(20,38),(25,44),(30,38)], "#8bd5ff", width=1)
+        # Moby Dock reference: blue whale carrying tiered shipping containers.
+        poly([(7, 28), (2, 22), (3, 33), (10, 37)], "#176eae", "#143e5b", 2)
+        oval((7, 21, 43, 41), "#2496ed", "#143e5b", 2)
+        poly([(10, 31), (18, 34), (34, 34), (40, 29), (37, 38), (17, 40)],
+             "#d8f1ff", "#143e5b", 1)
+        # stepped container stack with ribbing
+        for x, y, w in ((12, 14, 8), (21, 14, 8), (30, 14, 7),
+                        (17, 7, 8), (26, 7, 8), (22, 1, 8)):
+            rect((x, y, x + w, y + 7), "#43b8ee", "#155783", 1, 0)
+            for rx in range(x + 2, x + w - 1, 3):
+                line([(rx, y + 1), (rx, y + 6)], "#1673aa", 1)
+        eye(35, 28)
+        line([(34, 33), (37, 34), (40, 32)], "#143e5b", 1)
 
     elif pid == "github":
-        # Octocat: cat head plus eight curled tentacles.
-        poly([(9,20),(8,5),(19,12),(29,12),(40,5),(39,20),(36,32),(29,38),(19,38),(12,32)], c)
-        oval((13,16,35,34), hi, width=1)
-        eye(20,23); eye(29,23)
-        oval((22,27,27,31), "#f4a6b7", INK, 1)
-        smile((21,28,29,34))
+        # Mona/Octocat: cat head, pink face, and soft tentacle-like legs.
+        poly([(8, 19), (7, 5), (18, 12), (30, 12), (41, 5),
+              (40, 20), (37, 32), (30, 38), (18, 38), (11, 32)],
+             "#7654a8", "#39284f", 2)
+        oval((12, 16, 36, 34), "#f1b6d0", "#39284f", 1)
+        eye(20, 23); eye(29, 23)
+        oval((22, 27, 27, 31), "#9a5b79", INK, 1)
+        smile((21, 28, 29, 34))
         for pts in (
-            [(15,34),(10,37),(8,42),(4,41)],
-            [(19,36),(17,40),(19,44)],
-            [(25,37),(25,41),(28,44)],
-            [(32,34),(38,37),(40,42),(44,41)],
+            [(14, 34), (9, 38), (8, 43), (4, 42)],
+            [(20, 37), (18, 41), (20, 45)],
+            [(28, 37), (30, 41), (28, 45)],
+            [(34, 34), (40, 38), (41, 43), (45, 42)],
         ):
-            line(pts, c, 4)
-        line([(14,17),(18,14)], hi, 2); line([(30,14),(34,17)], hi, 2)
+            line(pts, "#7654a8", 4)
+        line([(13, 17), (17, 14)], "#b59bd8", 2)
+        line([(31, 14), (35, 17)], "#b59bd8", 2)
 
     elif pid == "gitlab":
-        # Tanuki: warm orange raccoon with dark eye mask and striped tail.
-        oval((10,14,38,40), c)
-        oval((4,7,18,24), hi); oval((30,7,44,24), hi)
-        oval((13,17,35,35), "#f6d9bd", width=1)
-        poly([(12,21),(18,17),(23,21),(28,17),(36,21),(33,28),(25,30),(16,28)], "#46515d", width=1)
-        eye(19,23); eye(29,23)
-        oval((22,27,27,31), "#3c4650", INK, 1)
-        smile((21,29,29,34))
-        line([(34,36),(41,40),(45,37)], c, 5)
-        line([(39,39),(42,40),(44,38)], WHITE, 2)
+        # Tanuki: orange/yellow geometric mask and infinity-loop cheeks.
+        poly([(6, 10), (18, 5), (24, 14), (30, 5), (42, 10),
+              (39, 25), (24, 42), (9, 25)], "#fc6d26", "#a43d20", 2)
+        poly([(9, 13), (18, 9), (24, 19), (30, 9), (39, 13),
+              (35, 25), (24, 35), (13, 25)], "#fca326", "#c86a1c", 1)
+        poly([(11, 22), (18, 17), (24, 23), (30, 17), (37, 22),
+              (33, 29), (24, 34), (15, 29)], "#fff0d5", "#9b542b", 1)
+        eye(19, 24); eye(29, 24)
+        oval((22, 28, 27, 32), "#75452e", INK, 1)
+        smile((21, 29, 29, 35))
 
     elif pid == "php":
-        # ElePHPant: blue elephant with broad ears and a curved trunk.
-        oval((11,13,38,40), c)
-        oval((3,17,19,34), hi); oval((30,17,46,34), hi)
-        oval((13,17,36,36), mid, width=1)
-        eye(21,23); eye(30,23)
-        line([(29,27),(35,30),(36,36),(32,41),(28,39),(29,34)], c, 5)
-        line([(17,39),(16,44)], dark, 3); line([(34,39),(35,44)], dark, 3)
-        oval((7,24,12,29), "#a9b9ff", width=1)
+        # ElePHPant: blue elephant, oversized ears and curled trunk.
+        oval((11, 13, 39, 41), "#8899ff", "#424d9a", 2)
+        oval((2, 16, 20, 34), "#aab7ff", "#424d9a", 2)
+        oval((30, 16, 46, 34), "#aab7ff", "#424d9a", 2)
+        oval((13, 17, 36, 37), "#9ba9ff", width=1)
+        eye(21, 23); eye(30, 23)
+        line([(30, 27), (36, 30), (37, 36), (33, 42), (29, 40), (30, 35)],
+             "#8899ff", 5)
+        line([(17, 39), (15, 44)], "#424d9a", 3)
+        line([(34, 39), (36, 44)], "#424d9a", 3)
 
     elif pid == "javascript":
-        # Javie: bright yellow rounded square, like the JS identity.
-        rect((7,7,41,41), "#f7df1e", "#c49c16", 3)
-        rect((11,11,37,37), "#ffe94f", "#e1b91b", 1)
-        eye(19,22); eye(30,22); smile((20,26,30,33))
-        line([(8,27),(3,30)], "#f7df1e", 4); line([(40,27),(45,30)], "#f7df1e", 4)
-        line([(17,40),(14,44)], dark, 3); line([(32,40),(35,44)], dark, 3)
-        d.text((17,30), "JS", fill="#9c7910")
+        # JavaScript identity: yellow square and dark JS monogram.
+        rect((6, 6, 42, 42), "#f7df1e", "#9e8514", 1, 1)
+        d.text((17, 25 + bob), "JS", fill="#252525", stroke_width=0)
+        # Small original companion feet keep the logo-inspired pet lively.
+        line([(15, 42), (13, 45)], "#d2a900", 3)
+        line([(34, 42), (36, 45)], "#d2a900", 3)
 
     elif pid == "typescript":
-        # Tessa is an original CodePaws owl companion (TypeScript has no official mascot).
-        oval((8,8,40,42), "#3178c6")
-        poly([(9,17),(7,6),(20,13),(28,13),(41,6),(39,18)], "#4d91df")
-        oval((12,16,36,34), "#d9edff", width=1)
-        oval((15,19,23,28), WHITE, "#245b99", 1); oval((25,19,33,28), WHITE, "#245b99", 1)
-        d.ellipse((18,21+bob,21,26+bob), fill=INK); d.ellipse((27,21+bob,30,26+bob), fill=INK)
-        poly([(21,29),(27,29),(24,34)], "#f4b84d", width=1)
-        line([(17,40),(15,44)], "#f4b84d", 3); line([(31,40),(33,44)], "#f4b84d", 3)
+        # TypeScript identity: saturated blue tile and white TS monogram.
+        rect((6, 6, 42, 42), "#3178c6", "#1e4d82", 1, 1)
+        d.text((12, 21 + bob), "TS", fill="#ffffff", stroke_width=0)
+        line([(15, 42), (13, 45)], "#1e4d82", 3)
+        line([(34, 42), (36, 45)], "#1e4d82", 3)
 
     elif pid == "ruby":
-        # Ruby: polished red gemstone with facets and a friendly face.
-        poly([(8,15),(16,7),(32,7),(40,15),(37,32),(24,43),(11,32)], c, width=3)
-        poly([(10,15),(18,9),(30,9),(38,15),(24,22)], "#ff9bad", width=1)
-        poly([(10,17),(23,24),(23,39),(12,31)], "#c93657", width=1)
-        poly([(38,17),(25,24),(25,39),(36,31)], "#a82e4d", width=1)
-        eye(19,27); eye(29,27); smile((21,29,28,35))
-        poly([(19,10),(24,5),(29,10),(24,15)], "#ffd2dc", width=1)
+        # Ruby's red multifaceted gemstone mark, with a subtle friendly face.
+        poly([(7, 15), (15, 7), (33, 7), (41, 15), (37, 31),
+              (24, 43), (11, 31)], "#c91432", "#701327", 2)
+        poly([(8, 15), (16, 8), (24, 15), (15, 22)], "#ff8290", "#a51b34", 1)
+        poly([(16, 8), (32, 8), (40, 15), (24, 22)], "#ed4058", "#a51b34", 1)
+        poly([(8, 17), (23, 24), (23, 40), (12, 31)], "#b10f2d", "#7c1429", 1)
+        poly([(40, 17), (25, 24), (25, 40), (36, 31)], "#8d1028", "#7c1429", 1)
+        eye(19, 27); eye(29, 27); smile((21, 29, 28, 35))
 
     elif pid == "c":
-        # Cee: compact friendly robot, an original CodePaws character.
-        rect((9,12,39,38), c, dark, 3)
-        rect((13,16,35,32), "#e3eaf0", width=1)
-        oval((17,20,23,27), "#6ba8d8", INK, 1); oval((26,20,32,27), "#6ba8d8", INK, 1)
-        smile((20,26,29,32))
-        line([(24,11),(24,5)], dark, 3); oval((20,1,28,8), "#f4d58d")
-        line([(9,23),(4,27)], dark, 4); line([(39,23),(44,27)], dark, 4)
-        line([(16,38),(14,44)], dark, 4); line([(32,38),(34,44)], dark, 4)
+        # C language mark: white C on a deep-blue hexagon, mascot-sized.
+        poly([(15, 5), (33, 5), (44, 15), (44, 33),
+              (33, 43), (15, 43), (4, 33), (4, 15)], "#07599f", "#063b68", 2)
+        d.text((12, 10 + bob), "C", fill="#ffffff", stroke_width=0)
 
     elif pid == "cpp":
-        # PlusPlus: blue gear-bot, another original CodePaws companion.
-        oval((7,10,41,42), "#659ad2", dark, 3)
-        for x,y in ((24,5),(24,42),(5,26),(43,26),(12,10),(36,10)):
-            oval((x-3,y-3,x+3,y+3), "#9bc3ed", dark, 1)
-        oval((13,17,35,35), "#dcecff", width=1)
-        eye(20,24); eye(29,24); smile((21,27,29,33))
-        rect((19,3,29,8), "#dcecff", dark, 1)
+        # C++ identity: blue hexagonal badge with clear C++ lettering.
+        poly([(15, 5), (33, 5), (44, 15), (44, 33),
+              (33, 43), (15, 43), (4, 33), (4, 15)], "#659ad2", "#315d8b", 2)
+        d.text((8, 11 + bob), "C++", fill="#ffffff", stroke_width=0)
 
     elif pid == "kotlin":
-        # Kotlin Koala: rounded grey koala with big fluffy ears.
-        oval((10,13,38,41), "#aeb8c5")
-        oval((3,5,20,23), "#cbd2dc"); oval((28,5,45,23), "#cbd2dc")
-        oval((7,9,16,18), "#e8a9b7", width=1); oval((32,9,41,18), "#e8a9b7", width=1)
-        oval((14,17,34,35), "#e5e9ee", width=1)
-        eye(20,24); eye(29,24)
-        oval((22,26,28,33), "#394958", INK, 1)
-        smile((21,30,29,35))
-        line([(17,40),(16,44)], dark, 3); line([(32,40),(33,44)], dark, 3)
+        # Kodee: purple angular body, black screen face, big white eyes.
+        poly([(9, 12), (8, 5), (20, 13), (28, 13), (40, 5),
+              (39, 25), (34, 33), (14, 33)], "#8054f6", "#4d2b9b", 2)
+        rect((11, 15, 37, 31), "#111016", "#2c1d4c", 2, 4)
+        oval((16, 18, 24, 27), WHITE, WHITE, 1)
+        oval((26, 18, 34, 27), WHITE, WHITE, 1)
+        d.ellipse((19, 20 + bob, 22, 25 + bob), fill="#111016")
+        d.ellipse((28, 20 + bob, 31, 25 + bob), fill="#111016")
+        smile((21, 25, 29, 30))
+        line([(11, 21), (5, 27), (4, 34)], "#8054f6", 4)
+        line([(37, 21), (43, 15), (44, 9)], "#8054f6", 4)
+        line([(18, 33), (16, 42), (13, 43)], "#8054f6", 5)
+        line([(30, 33), (32, 42), (35, 43)], "#8054f6", 5)
 
     elif pid == "swift":
-        # Swiftie: friendly orange swift bird with wing, beak and feather crest.
-        oval((8,14,40,39), c)
-        poly([(12,25),(19,15),(35,17),(29,31),(16,34)], hi)
-        poly([(36,20),(47,23),(38,29)], "#f4d58d")
-        poly([(14,17),(10,9),(20,14)], dark)
-        eye(34,20)
-        poly([(9,29),(2,37),(17,35)], dark)
-        line([(22,38),(20,44)], INK, 3); line([(30,38),(32,44)], INK, 3)
+        # Swift bird emblem interpreted as a compact red-orange flying bird.
+        poly([(5, 30), (15, 27), (22, 20), (9, 7), (27, 17),
+              (35, 4), (34, 23), (44, 29), (33, 33),
+              (24, 41), (13, 39)], "#f05138", "#9d2c22", 2)
+        poly([(7, 30), (20, 28), (28, 22), (23, 34), (13, 38)],
+             "#ff9b43", "#c24a2b", 1)
+        line([(24, 40), (22, 45)], "#9d2c22", 2)
+        line([(31, 37), (33, 43)], "#9d2c22", 2)
 
     elif pid == "perl":
-        # Perl camel: two humps, long neck and gentle face.
-        oval((5,25,37,40), c)
-        oval((8,17,20,31), hi); oval((20,16,32,31), hi)
-        poly([(28,31),(29,14),(34,7),(40,9),(41,17),(37,22),(37,33)], c)
-        oval((33,6,43,16), hi)
-        eye(39,11)
-        line([(35,17),(39,18),(42,16)], dark, 2)
-        line([(12,38),(10,44)], dark, 4); line([(31,38),(33,44)], dark, 4)
-        line([(14,26),(19,24)], "#f4d58d", 2)
+        # Perl camel emblem: white camel silhouette in a deep-blue roundel.
+        oval((3, 3, 45, 45), "#075b85", "#063d60", 1)
+        poly([(8, 27), (10, 22), (16, 21), (19, 25), (23, 23),
+              (28, 25), (32, 31), (35, 34), (41, 34), (42, 38),
+              (34, 38), (30, 35), (27, 30), (23, 31), (20, 38),
+              (16, 38), (17, 31), (13, 30), (11, 36), (8, 36),
+              (9, 30)], WHITE, WHITE, 1)
+        poly([(9, 23), (7, 18), (10, 14), (14, 14), (16, 17),
+              (14, 22)], WHITE, WHITE, 1)
+        line([(10, 17), (8, 15)], WHITE, 1)
 
     accessory = getattr(pet, "accessory", "none")
     if accessory == "cap":
-        d.polygon([(14,9+bob),(20,4+bob),(31,5+bob),(36,11+bob)], fill="#e34f65", outline=INK)
-        d.rounded_rectangle((11,10+bob,38,13+bob), radius=2, fill="#f4d58d", outline=INK)
+        d.polygon([(14, 9 + bob), (20, 4 + bob), (31, 5 + bob), (36, 11 + bob)],
+                  fill="#e34f65", outline=INK)
+        d.rounded_rectangle((11, 10 + bob, 38, 13 + bob), radius=2,
+                            fill="#f4d58d", outline=INK)
     elif accessory == "bow":
-        d.polygon([(18,9+bob),(10,5+bob),(11,14+bob),(19,12+bob)], fill="#ff75b5", outline=INK)
-        d.polygon([(20,9+bob),(29,5+bob),(28,14+bob),(20,12+bob)], fill="#ff75b5", outline=INK)
-        d.ellipse((17,7+bob,22,12+bob), fill="#ffe5f1", outline=INK)
+        d.polygon([(18, 9 + bob), (10, 5 + bob), (11, 14 + bob), (19, 12 + bob)],
+                  fill="#ff75b5", outline=INK)
+        d.polygon([(20, 9 + bob), (29, 5 + bob), (28, 14 + bob), (20, 12 + bob)],
+                  fill="#ff75b5", outline=INK)
+        d.ellipse((17, 7 + bob, 22, 12 + bob), fill="#ffe5f1", outline=INK)
     elif accessory == "glasses":
-        d.rounded_rectangle((13,20+bob,22,27+bob), radius=2, outline="#8bd5ff", width=2)
-        d.rounded_rectangle((27,20+bob,36,27+bob), radius=2, outline="#8bd5ff", width=2)
-        d.line((22,23+bob,27,23+bob), fill="#8bd5ff", width=2)
+        d.rounded_rectangle((13, 20 + bob, 22, 27 + bob), radius=2,
+                            outline="#8bd5ff", width=2)
+        d.rounded_rectangle((27, 20 + bob, 36, 27 + bob), radius=2,
+                            outline="#8bd5ff", width=2)
+        d.line((22, 23 + bob, 27, 23 + bob), fill="#8bd5ff", width=2)
     elif accessory == "crown":
-        d.polygon([(12,13+bob),(13,5+bob),(19,10+bob),(24,2+bob),(29,10+bob),(35,5+bob),(36,13+bob)], fill="#f4d058", outline=INK)
-        d.rectangle((13,12+bob,35,16+bob), fill="#e6a92e", outline=INK)
-        d.point((24,7+bob), fill="#ff6b8a")
+        d.polygon([(12, 13 + bob), (13, 5 + bob), (19, 10 + bob),
+                   (24, 2 + bob), (29, 10 + bob), (35, 5 + bob),
+                   (36, 13 + bob)], fill="#f4d058", outline=INK)
+        d.rectangle((13, 12 + bob, 35, 16 + bob), fill="#e6a92e", outline=INK)
+        d.point((24, 7 + bob), fill="#ff6b8a")
 
     if action == "sleep":
-        d.text((38,2), "Z", fill="#8bd5ff")
-        d.text((43,8), "z", fill="#8bd5ff")
+        d.text((38, 2), "Z", fill="#8bd5ff")
+        d.text((43, 8), "z", fill="#8bd5ff")
     elif action == "play":
-        for x,y in ((5,7),(43,8),(5,40),(43,39)):
-            d.ellipse((x-1,y-1,x+1,y+1), fill="#ffe08a")
+        for x, y in ((5, 7), (43, 8), (5, 40), (43, 39)):
+            d.ellipse((x - 1, y - 1, x + 1, y + 1), fill="#ffe08a")
     elif action == "bath":
-        d.ellipse((3,5,8,10), outline="#8bd5ff", width=2)
-        d.ellipse((40,4,46,10), outline="#8bd5ff", width=2)
+        d.ellipse((3, 5, 8, 10), outline="#8bd5ff", width=2)
+        d.ellipse((40, 4, 46, 10), outline="#8bd5ff", width=2)
 
     image.alpha_composite(layer)
     return image.convert("RGB")
 
 
 def render_pet(pet, frame=0, action=None):
-    """Render 48x48 friendly pixel art with terminal true-color half-blocks."""
+    """Render reference-informed 48x48 pixel art using terminal true color."""
     image = _draw(pet, frame, action)
     output = Text()
     for y in range(0, SIZE, 2):
         for x in range(SIZE):
             top = image.getpixel((x, y))
             bottom = image.getpixel((x, y + 1))
-            fg = "#{:02x}{:02x}{:02x}".format(*top)
-            bg = "#{:02x}{:02x}{:02x}".format(*bottom)
-            output.append("▀", Style(color=fg, bgcolor=bg))
+            foreground = "#{:02x}{:02x}{:02x}".format(*top)
+            background = "#{:02x}{:02x}{:02x}".format(*bottom)
+            output.append("▀", Style(color=foreground, bgcolor=background))
         if y < SIZE - 2:
-            output.append("\n")
+            output.append("\\n")
     return output
