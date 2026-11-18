@@ -68,15 +68,23 @@ class CodePawsApp(App[None]):
         color: #91a8b2;
     }
     #pet-stage {
-        color: #7ee0b5;
-        text-style: bold;
+        background: #172630;
+        color: #e8f1f2;
         content-align: center middle;
         height: auto;
-        min-height: 18;
+        min-height: 13;
         width: 1fr;
-        border: double #7ee0b5;
+        border: round #42616d;
         margin: 1 0;
-        padding: 1 2;
+        padding: 2 3;
+    }
+    .pet-subtitle {
+        color: #91a8b2;
+        margin-bottom: 1;
+    }
+    .stat {
+        margin: 0 0 1 0;
+        color: #d7e5e8;
     }
     .stat {
         margin: 0 0 1 0;
@@ -115,181 +123,8 @@ class CodePawsApp(App[None]):
         self.pets, self.selected_pet_id = load_family()
         self.page = "home"
         self.notice = "Welcome home! Your programming family starts here."
-        self.animation_frame = 0
-        self.animation_frames = {
-            "python": [
-                "          .--------.\n"
-                "         /  o    o  /\n"
-                "        |    ^     |\n"
-                "        |          |\n"
-                "         '--------'\n"
-                "       /|          |",
-                "          .--------.\n"
-                "         /  -    -  /\n"
-                "        |    w     |\n"
-                "        |          |\n"
-                "         '--------'\n"
-                "       /|          |",
-            ],
-            "rust": [
-                "        .----------.\n"
-                "      .'  o      o  '.\n"
-                "     /       ^        /\n"
-                "    |    .------.     |\n"
-                "     '._/________\__.'\n"
-                "        / /    / /",
-                "        .----------.\n"
-                "      .'  ^      ^  '.\n"
-                "     /       w        /\n"
-                "    |    .------.     |\n"
-                "     '._/________\__.'\n"
-                "        / /    / /",
-            ],
-            "go": [
-                "          .--------.\n"
-                "        .'  o    o  '.\n"
-                "       /      __      /\n"
-                "      |    .-'  '-.   |\n"
-                "      |   |  /  |  |  |\n"
-                "       '._ '----' _.'\n"
-                "          '------'",
-                "          .--------.\n"
-                "        .'  -    -  '.\n"
-                "       /      ww      /\n"
-                "      |    .-'  '-.   |\n"
-                "      |   |  /  |  |  |\n"
-                "       '._ '----' _.'\n"
-                "          '------'",
-            ],
-            "java": [
-                "          .==========.\n"
-                "        .'   .----.   '.\n"
-                "       /    / o  o /    /\n"
-                "      |    |   ^  |     |\n"
-                "      |    |      |     |\n"
-                "       '._  '----'  _.'\n"
-                "          '========'",
-                "          .==========.\n"
-                "        .'   .----.   '.\n"
-                "       /    / -  - /    /\n"
-                "      |    |   w  |     |\n"
-                "      |    |      |     |\n"
-                "       '._  '----'  _.'\n"
-                "          '========'",
-            ],
-            "docker": [
-                "             __________________\n"
-                "       _____/  []  []  []       /\n"
-                "   ___/   []  []  []  []       /\n"
-                "  /   o                       /\n"
-                "  |       .------------------'\n"
-                "   '------'\n"
-                "       ~ ~ ~ ~ ~ ~ ~ ~",
-                "             __________________\n"
-                "       _____/  []  []  []       /\n"
-                "   ___/   []  []  []  []       /\n"
-                "  /   ^                       /\n"
-                "  |       .------------------'\n"
-                "   '------'\n"
-                "       ~ ~ ~ ~ ~ ~ ~ ~",
-            ],
-            "github": [
-                "           /------/\n"
-                "         .'  o  o  '.\n"
-                "        /     __     /\n"
-                "       |    .'  '.   |\n"
-                "       |   /      /  |\n"
-                "        '._      _.'\n"
-                "          /|    |/\n"
-                "         /_|____|_",
-                "           /------/\n"
-                "         .'  -  -  '.\n"
-                "        /      w     /\n"
-                "       |    .'  '.   |\n"
-                "       |   /      /  |\n"
-                "        '._      _.'\n"
-                "          /|    |/\n"
-                "         /_|____|_",
-            ],
-            "gitlab": [
-                "          /----------/\n"
-                "        .'   .----.   '.\n"
-                "       /    / o  o /    /\n"
-                "      |    |   ^  |     |\n"
-                "      |     '----'      |\n"
-                "       '._          _.'\n"
-                "          /|      |/\n"
-                "         /_|______|_",
-                "          /----------/\n"
-                "        .'   .----.   '.\n"
-                "       /    / -  - /    /\n"
-                "      |    |   w  |     |\n"
-                "      |     '----'      |\n"
-                "       '._          _.'\n"
-                "          /|      |/\n"
-                "         /_|______|_",
-            ],
-        }
         self.active_action: str | None = None
-        self.action_frame = 0
         self.action_ticks = 0
-        self.action_frames = {
-            "feed": [
-                "          (  .  .  )\n"
-                "             \\__/\n"
-                "          .-========-.\n"
-                "         /   YUMMY!   \\\n"
-                "         \\____________/\n"
-                "              \\  🍪",
-                "          (  ^  ^  )\n"
-                "             \\__/\n"
-                "          .-========-.\n"
-                "         /  NOM NOM!  \\\n"
-                "         \\____________/\n"
-                "              \\  🍪",
-            ],
-            "play": [
-                "       *       .       *\n"
-                "          \\  ^_^  /\n"
-                "       --- (  > <  ) ---\n"
-                "          /   |   \\\n"
-                "       *      |      *\n"
-                "            _/ \\_",
-                "    *    .    \\o/    .    *\n"
-                "           ( ^o^ )\n"
-                "       --- /|   |\\ ---\n"
-                "          / |   | \\\n"
-                "       *    /   \\    *",
-            ],
-            "sleep": [
-                "          .-========-.\n"
-                "         /  -     -   \\\n"
-                "        |      z      |\n"
-                "        |   Z         |\n"
-                "         \\___________/\n"
-                "             (___)",
-                "          .-========-.\n"
-                "         /  -     -   \\\n"
-                "        |       Z     |\n"
-                "        |   z          |\n"
-                "         \\___________/\n"
-                "            (____)",
-            ],
-            "bath": [
-                "          .-========-.\n"
-                "         /  o     o   \\\n"
-                "        |    SPLASH!  |\n"
-                "      ~~~\\___________/~~~\n"
-                "          o   o   o\n"
-                "            __|__",
-                "       o  .-========-.  o\n"
-                "         /  ^     ^   \\\n"
-                "        |   SO FRESH! |\n"
-                "      ~~~\\___________/~~~\n"
-                "          o   o   o\n"
-                "            __|__",
-            ],
-        }
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -311,7 +146,7 @@ class CodePawsApp(App[None]):
 
     async def on_mount(self) -> None:
         self.set_interval(60, self.pass_time)
-        self.set_interval(0.65, self.animate_pet)
+        self.set_interval(0.8, self.animate_pet)
         await self.refresh_view()
 
     def action_show_page(self, page: str) -> None:
@@ -373,8 +208,7 @@ class CodePawsApp(App[None]):
         if callback is not None:
             self.notice = callback()
             self.active_action = action
-            self.action_frame = 0
-            self.action_ticks = 12
+            self.action_ticks = 10
 
     @property
     def selected_pet(self) -> Pet | None:
@@ -387,27 +221,16 @@ class CodePawsApp(App[None]):
         save_family(self.pets, self.selected_pet_id)
 
     def animate_pet(self) -> None:
-        """Advance either a care animation or the mascot's idle animation."""
+        """Refresh the modern mascot card and briefly show care reactions."""
         pet = self.selected_pet
         if pet is None or self.page != "home":
             return
-
-        if self.active_action and self.action_ticks > 0:
-            frames = self.action_frames[self.active_action]
-            art = frames[self.action_frame % len(frames)]
-            self.action_frame += 1
+        if self.action_ticks > 0:
             self.action_ticks -= 1
             if self.action_ticks == 0:
                 self.active_action = None
-        else:
-            frames = self.animation_frames.get(pet.pet_id)
-            if not frames:
-                return
-            self.animation_frame = (self.animation_frame + 1) % len(frames)
-            art = frames[self.animation_frame]
-
         try:
-            self.query_one("#pet-stage", Static).update(self.scale_ascii(art))
+            self.query_one("#pet-stage", Static).update(self.pet_visual(pet))
         except Exception:
             # The home screen may be transitioning between pages.
             pass
@@ -453,12 +276,11 @@ class CodePawsApp(App[None]):
             Static(self.notice, classes="notice"),
             Static(f"Meet {pet.name}  ·  {pet.technology}", classes="page-title"),
             Static(
-                self.current_pet_art(pet),
+                self.pet_visual(pet),
                 id="pet-stage",
-                markup=False,
-                expand=True,
+                markup=True,
             ),
-            Static(f"{pet.species}  |  Mood: {pet.mood}"),
+            Static(f"{pet.species}  ·  {pet.mood}", classes="pet-subtitle"),
             Static(pet.personality, classes="muted"),
             Static(self.stat_line("Happiness", pet.happiness), classes="stat"),
             Static(self.stat_line("Energy", pet.energy), classes="stat"),
@@ -479,29 +301,35 @@ class CodePawsApp(App[None]):
             ),
         ]
 
-    def current_pet_art(self, pet: Pet) -> str:
-        if self.active_action and self.action_ticks > 0:
-            frames = self.action_frames[self.active_action]
-            return self.scale_ascii(frames[self.action_frame % len(frames)])
-
-        frames = self.animation_frames.get(pet.pet_id)
-        art = frames[self.animation_frame % len(frames)] if frames else pet.art
-        return self.scale_ascii(art)
-
-    @staticmethod
-    def scale_ascii(art: str) -> str:
-        """Make each mascot feel like a large centerpiece in the terminal."""
-        enlarged_lines = []
-        for line in art.splitlines():
-            wide_line = "".join(character * 2 for character in line)
-            enlarged_lines.extend((wide_line, wide_line))
-        return "\n".join(enlarged_lines)
+    def pet_visual(self, pet: Pet) -> str:
+        """Build a colorful, modern Rich card instead of ASCII art."""
+        action_messages = {
+            "feed": "🍪  SNACK TIME!  •  YUM YUM!",
+            "play": "🎉  PLAY MODE!  •  WHEEEE!",
+            "sleep": "💤  NAP TIME  •  Zzz...",
+            "bath": "🫧  SPLASH!  •  FRESH & CLEAN",
+        }
+        reaction = action_messages.get(self.active_action, "✨  HAPPY TO BE HERE  ✨")
+        color = pet.color
+        return (
+            f"[bold {color}]╭────────────────────────────────────────────────────────────╮[/]\n"
+            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
+            f"[bold {color}]│[/]                    [bold {color}]{pet.emoji}[/]                      [bold {color}]│[/]\n"
+            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
+            f"[bold {color}]│[/]             [bold white]{pet.name}[/]  [dim]the {pet.species}[/]             [bold {color}]│[/]\n"
+            f"[bold {color}]│[/]                 [bold {color}]{pet.technology}[/]                  [bold {color}]│[/]\n"
+            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
+            f"[bold {color}]│[/]              [bold white]{reaction}[/]               [bold {color}]│[/]\n"
+            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
+            f"[bold {color}]╰────────────────────────────────────────────────────────────╯[/]"
+        )
 
     @staticmethod
     def stat_line(label: str, value: int) -> str:
         filled = round(value / 10)
         bar = "█" * filled + "░" * (10 - filled)
-        return f"{label:<13} [{bar}] {value:>3}%"
+        color = "#7ee0b5" if value >= 60 else "#f4d58d" if value >= 30 else "#ff7b86"
+        return f"[bold]{label:<13}[/] [{color}]{bar}[/] {value:>3}%"
 
     def build_adoption_page(self) -> list:
         adopted = {pet.pet_id for pet in self.pets}
@@ -518,8 +346,8 @@ class CodePawsApp(App[None]):
             already_adopted = entry["pet_id"] in adopted
             widgets.append(
                 Static(
-                    f"{entry['name']}  ·  {entry['technology']}\n"
-                    f"{entry['species']}\n{entry['personality']}",
+                    f"{entry.get('emoji', '🐾')}  [bold {entry.get('color', '#7ee0b5')}]{entry['name']}[/]  ·  {entry['technology']}\n"
+                    f"[dim]{entry['species']}[/]\n{entry['personality']}",
                     classes="catalog-card",
                 )
             )
@@ -547,7 +375,7 @@ class CodePawsApp(App[None]):
             selected = pet.pet_id == self.selected_pet_id
             widgets.append(
                 Static(
-                    f"{'★ ' if selected else ''}{pet.name} — {pet.technology} "
+                    f"{'★ ' if selected else ''}{pet.emoji}  [bold {pet.color}]{pet.name}[/] — {pet.technology} "
                     f"| {pet.mood} | Happiness {pet.happiness}%",
                     classes="catalog-card",
                 )
