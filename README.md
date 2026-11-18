@@ -55,7 +55,7 @@ To launch the desktop game:
 python desktop_game.py
 ```
 
-The TUI takes over the terminal while it is running; press **Q** to quit. In the desktop game, press **Esc** or close the window.
+The TUI takes over the terminal while it is running; press **Q** to quit. In the desktop game, press **A** to open the Adoption Center, **Esc** to return home from that screen, or **Esc** from the home screen to quit. You can also click the in-game buttons.
 
 ## Keyboard shortcuts
 
@@ -65,6 +65,20 @@ The TUI takes over the terminal while it is running; press **Q** to quit. In the
 | A | Adoption Center |
 | F | Family |
 | Q | Quit |
+
+## Desktop game controls
+
+| Key | Action |
+| --- | --- |
+| A | Open Adoption Center |
+| F / P / S / B | Feed / Play / Sleep / Bathe |
+| Left / Right | Switch companion |
+| 1 / 2 / 3 | Change room |
+| Esc | Return from Adoption Center or quit from home |
+
+## Builds and releases
+
+Run the **Desktop builds and releases** workflow manually from the Actions tab to create Windows and Linux build artifacts. Pushing a tag such as `v0.9.0` runs the same builds and creates a GitHub Release containing both ZIP packages. Each workflow artifact is retained for 30 days.
 
 ## Mascot family
 
