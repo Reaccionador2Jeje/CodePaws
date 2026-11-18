@@ -64,6 +64,9 @@ class CodePawsDesktop:
         self.social_pair: tuple[str, str] | None = None
         self.social_until = 0.0
         self.next_social = time.monotonic() + 8.0
+        # Bowls are shared room objects; each serving can feed one companion.
+        self.food_bowls: dict[str, dict[str, int]] = {}
+        self.pet_food_cooldown: dict[str, float] = {}
         self.pet_motion = {
             pet.pet_id: {
                 "x": 340.0 + (index % 4) * 105,
@@ -198,6 +201,17 @@ class CodePawsDesktop:
             for x, y in ((430, 180), (590, 260), (350, 260), (620, 450)):
                 pygame.draw.circle(self.screen, (255, 224, 139), (x, y), 4)
 
+        # Shared food bowl placed in this room.
+        bowl = self.food_bowls.get(room)
+        if bowl and bowl["servings"] > 0:
+            bx, by = bowl["x"], bowl["y"]
+            pygame.draw.ellipse(self.screen, (48, 42, 38), (bx - 31, by - 9, 62, 18))
+            pygame.draw.ellipse(self.screen, (226, 159, 91), (bx - 29, by - 13, 58, 18))
+            pygame.draw.ellipse(self.screen, (250, 208, 139), (bx - 21, by - 12, 42, 10))
+            for crumb_x in (bx - 10, bx, bx + 9):
+                pygame.draw.circle(self.screen, (191, 113, 61), (crumb_x, by - 9), 3)
+            self.label(f"Food · {bowl['servings']}", bx - 30, by + 10, TEXT, self.small)
+
         # Every companion assigned to this room is visible at the same time.
         visible_pets = [
             companion for companion in self.pets if companion.room == room
@@ -242,7 +256,7 @@ class CodePawsDesktop:
                 self.screen.blit(heart, (px - 10, py - 119))
 
         actions = [
-            ("Feed", "feed", (250, 590)),
+            ("Place food", "food", (250, 590)),
             ("Play", "play", (381, 590)),
             ("Sleep", "sleep", (512, 590)),
             ("Bathe", "bathe", (643, 590)),
@@ -317,7 +331,17 @@ class CodePawsDesktop:
                 "next_wander": now + 1.0 + index * 0.5,
                 "facing_left": False,
             })
-            if now >= motion["next_wander"] and abs(
+            bowl = self.food_bowls.get(companion.room)
+            cooldown = self.pet_food_cooldown.get(companion.pet_id, 0.0)
+            seeking_food = bool(
+                bowl and bowl["servings"] > 0
+                and companion.hunger >= 30 and now >= cooldown
+            )
+            if seeking_food:
+                motion["target_x"] = float(bowl["x"] - 42)
+                motion["target_y"] = float(bowl["y"] - 8)
+                motion["next_wander"] = now + 10.0
+            elif now >= motion["next_wander"] and abs(
                 motion["x"] - motion["target_x"]
             ) < 5:
                 motion["target_x"] = random.uniform(320, 710)
@@ -332,6 +356,21 @@ class CodePawsDesktop:
                 motion["x"] += dx / distance * speed
                 motion["y"] += dy / distance * speed
                 motion["facing_left"] = dx < 0
+
+            # Reaching the bowl consumes one serving and feeds this companion.
+            if (
+                seeking_food
+                and (motion["x"] - (bowl["x"] - 42)) ** 2
+                + (motion["y"] - (bowl["y"] - 8)) ** 2 < 22 ** 2
+            ):
+                companion.feed()
+                companion.gain_experience(3)
+                bowl["servings"] -= 1
+                self.pet_food_cooldown[companion.pet_id] = now + 12.0
+                self.notice = f"{companion.name} enjoyed a meal!"
+                if bowl["servings"] <= 0:
+                    self.food_bowls.pop(companion.room, None)
+                self.save()
 
         # Occasionally, two friends in the same room meet for a social moment.
         if self.social_pair and now >= self.social_until:
@@ -385,6 +424,16 @@ class CodePawsDesktop:
         motion["next_wander"] = time.monotonic() + 3.0
 
     def act(self, action: str) -> None:
+        if action == "food":
+            room = self.pet.room
+            existing = self.food_bowls.get(room)
+            if existing:
+                existing["servings"] = min(6, existing["servings"] + 3)
+            else:
+                self.food_bowls[room] = {"x": 555, "y": 500, "servings": 3}
+            self.notice = f"You placed a shared food bowl in the {room}!"
+            self.save()
+            return
         messages = {
             "feed": self.pet.feed,
             "play": self.pet.play,
