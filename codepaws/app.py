@@ -230,6 +230,66 @@ class CodePawsApp(App[None]):
                 "         /_|______|_",
             ],
         }
+        self.active_action: str | None = None
+        self.action_frame = 0
+        self.action_ticks = 0
+        self.action_frames = {
+            "feed": [
+                "          (  .  .  )\n"
+                "             \\__/\n"
+                "          .-========-.\n"
+                "         /   YUMMY!   \\\n"
+                "         \\____________/\n"
+                "              \\  🍪",
+                "          (  ^  ^  )\n"
+                "             \\__/\n"
+                "          .-========-.\n"
+                "         /  NOM NOM!  \\\n"
+                "         \\____________/\n"
+                "              \\  🍪",
+            ],
+            "play": [
+                "       *       .       *\n"
+                "          \\  ^_^  /\n"
+                "       --- (  > <  ) ---\n"
+                "          /   |   \\\n"
+                "       *      |      *\n"
+                "            _/ \\_",
+                "    *    .    \\o/    .    *\n"
+                "           ( ^o^ )\n"
+                "       --- /|   |\\ ---\n"
+                "          / |   | \\\n"
+                "       *    /   \\    *",
+            ],
+            "sleep": [
+                "          .-========-.\n"
+                "         /  -     -   \\\n"
+                "        |      z      |\n"
+                "        |   Z         |\n"
+                "         \\___________/\n"
+                "             (___)",
+                "          .-========-.\n"
+                "         /  -     -   \\\n"
+                "        |       Z     |\n"
+                "        |   z          |\n"
+                "         \\___________/\n"
+                "            (____)",
+            ],
+            "bath": [
+                "          .-========-.\n"
+                "         /  o     o   \\\n"
+                "        |    SPLASH!  |\n"
+                "      ~~~\\___________/~~~\n"
+                "          o   o   o\n"
+                "            __|__",
+                "       o  .-========-.  o\n"
+                "         /  ^     ^   \\\n"
+                "        |   SO FRESH! |\n"
+                "      ~~~\\___________/~~~\n"
+                "          o   o   o\n"
+                "            __|__",
+            ],
+        }
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -312,6 +372,9 @@ class CodePawsApp(App[None]):
         callback = actions.get(action)
         if callback is not None:
             self.notice = callback()
+            self.active_action = action
+            self.action_frame = 0
+            self.action_ticks = 12
 
     @property
     def selected_pet(self) -> Pet | None:
@@ -324,18 +387,27 @@ class CodePawsApp(App[None]):
         save_family(self.pets, self.selected_pet_id)
 
     def animate_pet(self) -> None:
-        """Advance the selected mascot's ASCII animation without rebuilding the UI."""
+        """Advance either a care animation or the mascot's idle animation."""
         pet = self.selected_pet
         if pet is None or self.page != "home":
             return
-        frames = self.animation_frames.get(pet.pet_id)
-        if not frames:
-            return
-        self.animation_frame = (self.animation_frame + 1) % len(frames)
+
+        if self.active_action and self.action_ticks > 0:
+            frames = self.action_frames[self.active_action]
+            art = frames[self.action_frame % len(frames)]
+            self.action_frame += 1
+            self.action_ticks -= 1
+            if self.action_ticks == 0:
+                self.active_action = None
+        else:
+            frames = self.animation_frames.get(pet.pet_id)
+            if not frames:
+                return
+            self.animation_frame = (self.animation_frame + 1) % len(frames)
+            art = frames[self.animation_frame]
+
         try:
-            self.query_one("#pet-stage", Static).update(
-                self.scale_ascii(frames[self.animation_frame])
-            )
+            self.query_one("#pet-stage", Static).update(self.scale_ascii(art))
         except Exception:
             # The home screen may be transitioning between pages.
             pass
@@ -407,12 +479,12 @@ class CodePawsApp(App[None]):
         ]
 
     def current_pet_art(self, pet: Pet) -> str:
+        if self.active_action and self.action_ticks > 0:
+            frames = self.action_frames[self.active_action]
+            return self.scale_ascii(frames[self.action_frame % len(frames)])
+
         frames = self.animation_frames.get(pet.pet_id)
-        art = (
-            frames[self.animation_frame % len(frames)]
-            if frames
-            else pet.art
-        )
+        art = frames[self.animation_frame % len(frames)] if frames else pet.art
         return self.scale_ascii(art)
 
     @staticmethod
