@@ -11,6 +11,8 @@ CodePaws is a full-screen terminal virtual-pet simulator. Adopt mascots inspired
 - Adopt 16 mascots: Python, Rust, Go, Java, Docker, GitHub, GitLab, PHP, JavaScript, TypeScript, Ruby, C, C++, Kotlin, Swift and Perl.
 - Feed, play with, let sleep, and bathe your pets.
 - Happiness, energy, hunger and cleanliness statistics.
+- Pet progression: earn experience through care actions, level up, and track XP.
+- Every pet has its own personality and mood description.
 - Family album and pet selection.
 - Coin and gem wallet with persistent balances.
 - Earn coins by caring for pets, with a short reward cooldown to prevent button-spamming.
@@ -72,7 +74,7 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Project status
 
-**Version 0.4.0** — Coin-and-gem economy, priced adoptions and family milestones.
+**Version 0.5.0** — Pet experience, levels and progression, alongside the coin-and-gem economy.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
