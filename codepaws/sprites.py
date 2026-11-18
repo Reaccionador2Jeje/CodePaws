@@ -23,7 +23,7 @@ def _shade(color: str, factor: float) -> str:
 
 
 def _draw(pet, frame: int, action: str | None) -> Image.Image:
-    image = Image.new("RGB", (SIZE, SIZE), BACKGROUND)
+    image = Image.new("RGBA", (SIZE, SIZE), BACKGROUND)
     layer = Image.new("RGBA", (SIZE, SIZE), (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
     c = pet.color
@@ -218,7 +218,7 @@ def _draw(pet, frame: int, action: str | None) -> Image.Image:
         d.point((8,15), fill="#ffffff"); d.point((39,14), fill="#ffffff")
 
     image.alpha_composite(layer)
-    return image
+    return image.convert("RGB")
 
 
 def render_pet(pet, frame=0, action=None):
