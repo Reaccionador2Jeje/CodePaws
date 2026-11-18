@@ -72,3 +72,29 @@ def load_economy() -> dict[str, Any]:
         }
     except (OSError, ValueError, TypeError):
         return {"coins": 120, "gems": 2, "gem_milestones": []}
+
+
+HOUSE_PATH = Path("data/house.json")
+
+
+def load_house() -> dict[str, Any]:
+    """Load the persistent accessory inventory."""
+    defaults = {"owned_accessories": ["none"]}
+    if not HOUSE_PATH.exists():
+        return defaults
+    try:
+        data = json.loads(HOUSE_PATH.read_text(encoding="utf-8"))
+        owned = data.get("owned_accessories", ["none"])
+        if not isinstance(owned, list):
+            owned = ["none"]
+        return {"owned_accessories": sorted(set(["none", *owned]))}
+    except (OSError, ValueError, TypeError):
+        return defaults
+
+
+def save_house(owned_accessories: list[str]) -> None:
+    HOUSE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    payload = {"owned_accessories": sorted(set(["none", *owned_accessories]))}
+    temp = HOUSE_PATH.with_suffix(".tmp")
+    temp.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    temp.replace(HOUSE_PATH)
