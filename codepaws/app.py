@@ -10,7 +10,7 @@ from textual.widgets import Button, Footer, Header, Static
 
 from .models import PET_CATALOG, Pet, create_pet
 from .sprites import render_pet
-from .storage import load_family, save_family
+from .storage import load_family, save_family, load_house, save_house
 
 
 class CodePawsApp(App[None]):
@@ -138,6 +138,9 @@ class CodePawsApp(App[None]):
         self.gem_milestones: set[int] = set()
         self.last_coin_reward = 0.0
         self.load_economy()
+        house_data = load_house()
+        self.owned_accessories = house_data.get("owned_accessories", ["none"])
+        self.current_room = "living"
         self.page = "home"
         self.notice = "Welcome home! Your programming family starts here."
         self.active_action: str | None = None
@@ -361,6 +364,8 @@ class CodePawsApp(App[None]):
             return self.build_family_page()
         if self.page == "about":
             return self.build_about_page()
+        if self.page == "house":
+            return self.build_house_page()
         return self.build_home_page()
 
     def build_home_page(self) -> list:
