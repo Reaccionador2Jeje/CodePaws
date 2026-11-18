@@ -71,8 +71,8 @@ class CodePawsApp(App[None]):
         color: #7ee0b5;
         text-style: bold;
         content-align: center middle;
-        height: 1fr;
-        min-height: 23;
+        height: auto;
+        min-height: 18;
         width: 1fr;
         border: double #7ee0b5;
         margin: 1 0;
@@ -456,6 +456,7 @@ class CodePawsApp(App[None]):
                 self.current_pet_art(pet),
                 id="pet-stage",
                 markup=False,
+                expand=True,
             ),
             Static(f"{pet.species}  |  Mood: {pet.mood}"),
             Static(pet.personality, classes="muted"),
