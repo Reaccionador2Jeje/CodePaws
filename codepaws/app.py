@@ -378,24 +378,17 @@ class CodePawsApp(App[None]):
         for y, row in enumerate(sprite):
             cells = []
             for x, pixel in enumerate(row):
-                if pixel == ".":
+                if (y, x) in {(4, 3), (4, 8)}:
+                    cells.append(f"[bold #101820 on {body}]● [/bold #101820 on {body}]")
+                elif (y, x) == (6, 5):
+                    cells.append(f"[bold #101820 on {body}]ᴗ [/bold #101820 on {body}]")
+                elif pixel == ".":
                     cells.append("    ")
                 elif pixel == "#":
                     cells.append(f"[on {body}]  [/on {body}]")
                 else:
                     cells.append(f"[on {outline}]  [/on {outline}]")
             rows.append("".join(cells))
-        # Add a pair of expressive eyes and a small smile using foreground ink.
-        eye_row = list(sprite[4])
-        eye_row[3:5], eye_row[8:10] = list("ee"), list("ee")
-        mouth_row = list(sprite[6])
-        mouth_row[5] = "m"
-        for index, pixel in enumerate(eye_row):
-            if pixel == "e":
-                rows[4] = rows[4][:index * 4] + f"[bold #101820 on {body}]● [/bold #101820 on {body}]" + rows[4][index * 4 + 4:]
-        for index, pixel in enumerate(mouth_row):
-            if pixel == "m":
-                rows[6] = rows[6][:index * 4] + f"[bold #101820 on {body}]ᴗ [/bold #101820 on {body}]" + rows[6][index * 4 + 4:]
         reactions = {"feed": "🍪  SNACK TIME!", "play": "🎉  PLAY MODE!", "sleep": "💤  NAP TIME", "bath": "🫧  SPLASH TIME!"}
         reaction = reactions.get(self.active_action, "✨  HAPPY TO BE HERE  ✨")
         return "\n".join(rows) + f"\n\n[bold white]{pet.name}[/]  [bold {pet.color}]{pet.technology.upper()}[/]\n[dim]{pet.species}[/]\n[bold white]{reaction}[/]"
