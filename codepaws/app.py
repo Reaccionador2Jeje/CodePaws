@@ -479,16 +479,85 @@ class CodePawsApp(App[None]):
         widgets.append(Static(f"Together: {len(self.pets)} happy family member(s)!"))
         return widgets
 
+
+    ROOM_INFO = {
+        "living": ("Living Room", "🛋️", "A cozy place for everyone to relax.", "#274653"),
+        "bedroom": ("Bedroom", "🛏️", "A quiet room for naps and peaceful nights.", "#343451"),
+        "garden": ("Garden", "🌳", "Fresh air, flowers and outdoor playtime.", "#244b3a"),
+    }
+
+    ACCESSORIES = [
+        {"id": "none", "name": "No accessory", "emoji": "—", "price": 0},
+        {"id": "cap", "name": "Pixel Cap", "emoji": "🧢", "price": 45},
+        {"id": "bow", "name": "Cute Bow", "emoji": "🎀", "price": 55},
+        {"id": "glasses", "name": "Star Glasses", "emoji": "🤓", "price": 70},
+        {"id": "crown", "name": "Golden Crown", "emoji": "👑", "price": 120},
+    ]
+
+    @classmethod
+    def room_name(cls, room_id: str) -> str:
+        return cls.ROOM_INFO.get(room_id, cls.ROOM_INFO["living"])[0]
+
+    def build_house_page(self) -> list:
+        room_name, icon, description, color = self.ROOM_INFO[self.current_room]
+        occupants = [pet for pet in self.pets if getattr(pet, "room", "living") == self.current_room]
+        widgets = [
+            Static("MY LITTLE HOME", classes="page-title"),
+            Static(self.wallet_line(), classes="wallet"),
+            Static(self.notice, classes="notice"),
+            Static(f"{icon}  {room_name.upper()}", classes="page-title"),
+            Static(description, classes="muted"),
+            Static(f"ROOM COLOR  {color}   ·   {len(occupants)} resident(s)", classes="catalog-card"),
+            Horizontal(
+                Button("🛋️ Living Room", id="room-living", variant="primary" if self.current_room == "living" else "default"),
+                Button("🛏️ Bedroom", id="room-bedroom", variant="primary" if self.current_room == "bedroom" else "default"),
+                Button("🌳 Garden", id="room-garden", variant="primary" if self.current_room == "garden" else "default"),
+                classes="action-row",
+            ),
+            Static("ROOM RESIDENTS", classes="page-title"),
+        ]
+        if occupants:
+            for pet in occupants:
+                widgets.append(Static(f"{pet.emoji}  {pet.name} · Level {pet.level}", classes="catalog-card"))
+        else:
+            widgets.append(Static("This room is empty. Move a family member here!", classes="muted"))
+        widgets.append(Static("MOVE A PET HERE", classes="page-title"))
+        for pet in self.pets:
+            here = getattr(pet, "room", "living") == self.current_room
+            widgets.append(Button(
+                f"{'✓ ' if here else '＋ '}{pet.name}",
+                id=f"place-{pet.pet_id}",
+                disabled=here,
+                variant="success" if here else "default",
+            ))
+        if not self.pets:
+            widgets.append(Static("Adopt a pet before arranging your home."))
+        widgets.append(Static("ACCESSORY SHOP", classes="page-title"))
+        selected = self.selected_pet
+        widgets.append(Static(f"Selected pet: {selected.name if selected else 'No pet yet'}", classes="muted"))
+        for item in self.ACCESSORIES:
+            owned = item["id"] in self.owned_accessories
+            equipped = bool(selected and getattr(selected, "accessory", "none") == item["id"])
+            status = "Equipped" if equipped else ("Owned · equip" if owned else f"◉ {item['price']} coins")
+            widgets.append(Static(f"{item['emoji']}  [bold]{item['name']}[/]  ·  {status}", classes="catalog-card"))
+            widgets.append(Button(
+                "Equipped" if equipped else ("Equip" if owned else f"Buy · {item['price']} coins"),
+                id=f"accessory-{item['id']}",
+                disabled=equipped or selected is None,
+                variant="success" if equipped else "primary",
+            ))
+        return widgets
+
     def build_about_page(self) -> list:
         return [
             Static("ABOUT CODEPAWS", classes="page-title"),
-            Static("CodePaws 0.5.2 — Your Programming Family"),
+            Static("CodePaws 0.6.0 — My Little Home"),
             Static(
                 "A full-screen terminal pet simulator where programming "
                 "languages, tools and platforms become digital companions."
             ),
             Static("Made with Python, Textual and a little love. ♥", classes="muted"),
-            Static("Keyboard shortcuts: H = Home · A = Adopt · F = Family · Q = Quit"),
+            Static("Keyboard shortcuts: H = Home · A = Adopt · F = Family · R = House · Q = Quit"),
         ]
 
 
