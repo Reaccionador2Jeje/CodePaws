@@ -280,8 +280,6 @@ class CodePawsApp(App[None]):
         ]
         for entry in PET_CATALOG:
             already_adopted = entry["pet_id"] in adopted
-            card = Vertical(classes="catalog-card")
-            card.mount  # Keep the card a normal Textual container.
             widgets.append(
                 Static(
                     f"{entry['name']}  ·  {entry['technology']}\n"
