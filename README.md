@@ -10,7 +10,7 @@ CodePaws is a full-screen terminal virtual-pet simulator. Adopt programming lang
 - Reference-informed 48×48 pixel-art companions rendered with terminal true-color pixels.
 - Mascot/logo reference index with source links and attribution notes (`docs/mascot-references.md`).
 - Animated idle bobbing, blinking and care-action effects.
-- Adopt 5 language mascots: Rust, Go, Java, PHP and Kotlin.
+- Adopt 10 mascots: Python, Rust, Go, Java, Docker, GitHub, GitLab, PHP, Kotlin and Perl.
 - Feed, play with, let sleep, and bathe your pets.
 - Happiness, energy, hunger and cleanliness statistics.
 - Pet progression: earn experience through care actions, level up, and track XP.
@@ -63,15 +63,21 @@ Only languages with an established mascot are included:
 
 | Language | Mascot |
 | --- | --- |
+| Python | Py |
 | Rust | Ferris |
 | Go | Gopher |
 | Java | Duke |
+| Docker | Moby |
+| GitHub | Mona |
+| GitLab | Tanuki |
 | PHP | ElePHPant |
+| Kotlin | Kodee |
+| Perl | Camel |
 | Kotlin | Kodee |
 
 ## Project status
 
-**Version 0.8.0** — Mascot-only Family: the adoption catalog now contains only programming languages with recognized mascots. Logo-only languages and non-language developer tools have been removed. Player saves remain outside the Git checkout.
+**Version 0.8.1** — Mascot Family: the catalog includes languages and developer tools with recognized mascots. Logo-only entries without mascots remain excluded. Player saves remain outside the Git checkout.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
