@@ -106,6 +106,12 @@ class Pet:
 PET_CATALOG: list[dict[str, str]] = [
 
     {
+        "pet_id": "python", "name": "Py", "technology": "Python",
+        "species": "Python mascot snake",
+        "personality": "Curious, friendly and a little sleepy.",
+        "emoji": "🐍", "color": "#4caf50", "art": "🐍",
+    },
+    {
         "pet_id": "rust",
         "name": "Ferris",
         "technology": "Rust",
@@ -157,6 +163,24 @@ PET_CATALOG: list[dict[str, str]] = [
 
 
     {
+        "pet_id": "docker", "name": "Moby", "technology": "Docker",
+        "species": "Container whale",
+        "personality": "Gentle, big-hearted and always carrying friends.",
+        "emoji": "🐳", "color": "#249bd3", "art": "🐳",
+    },
+    {
+        "pet_id": "github", "name": "Mona", "technology": "GitHub",
+        "species": "Cat-octopus",
+        "personality": "Creative, social and adventurous.",
+        "emoji": "🐙", "color": "#9b6bd3", "art": "🐙",
+    },
+    {
+        "pet_id": "gitlab", "name": "Tanuki", "technology": "GitLab",
+        "species": "Tanuki",
+        "personality": "Organized, clever and collaborative.",
+        "emoji": "🦝", "color": "#f28c45", "art": "🦝",
+    },
+    {
         "pet_id": "php",
         "name": "ElePHPant",
         "technology": "PHP",
@@ -183,6 +207,12 @@ PET_CATALOG: list[dict[str, str]] = [
     },
 
 
+    {
+        "pet_id": "perl", "name": "Camel", "technology": "Perl",
+        "species": "Camel mascot",
+        "personality": "Resourceful, adaptable and full of surprises.",
+        "emoji": "🐪", "color": "#54a6a6", "art": "🐪",
+    },
 ]
 
 
