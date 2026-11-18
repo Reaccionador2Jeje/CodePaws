@@ -79,7 +79,7 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Project status
 
-**Version 0.6.0** — My Little Home: three rooms, pet placement, persistent accessory inventory and cosmetic equipment.
+**Version 0.6.1** — My Little Home: three rooms, pet placement, persistent accessory inventory and cosmetic equipment.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
