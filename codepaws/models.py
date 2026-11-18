@@ -20,6 +20,8 @@ class Pet:
     color: str = "#7ee0b5"
     level: int = 1
     experience: int = 0
+    room: str = "living"
+    accessory: str = "none"
 
     @property
     def experience_to_next_level(self) -> int:
