@@ -2,7 +2,7 @@
 
 **Your Programming Family — A Little Home for the World of Code**
 
-CodePaws is a full-screen terminal virtual-pet simulator. Adopt mascots inspired by programming languages and developer tools, take care of them, and grow your own programming family.
+CodePaws is a full-screen terminal virtual-pet simulator. Adopt programming languages that have recognized mascots, take care of them, and grow your own programming family.
 
 ## Features
 
@@ -10,7 +10,7 @@ CodePaws is a full-screen terminal virtual-pet simulator. Adopt mascots inspired
 - Reference-informed 48×48 pixel-art companions rendered with terminal true-color pixels.
 - Mascot/logo reference index with source links and attribution notes (`docs/mascot-references.md`).
 - Animated idle bobbing, blinking and care-action effects.
-- Adopt 16 mascots: Python, Rust, Go, Java, Docker, GitHub, GitLab, PHP, JavaScript, TypeScript, Ruby, C, C++, Kotlin, Swift and Perl.
+- Adopt 5 language mascots: Rust, Go, Java, PHP and Kotlin.
 - Feed, play with, let sleep, and bathe your pets.
 - Happiness, energy, hunger and cleanliness statistics.
 - Pet progression: earn experience through care actions, level up, and track XP.
@@ -59,28 +59,19 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Mascot family
 
-| Technology | Mascot |
+Only languages with an established mascot are included:
+
+| Language | Mascot |
 | --- | --- |
-| Python | Py |
 | Rust | Ferris |
 | Go | Gopher |
 | Java | Duke |
-| Docker | Moby |
-| GitHub | Octocat |
-| GitLab | Tanuki |
 | PHP | ElePHPant |
-| JavaScript | Javie |
-| TypeScript | Tessa |
-| Ruby | Ruby |
-| C | Cee |
-| C++ | PlusPlus |
 | Kotlin | Kodee |
-| Swift | Swiftie |
-| Perl | Camel |
 
 ## Project status
 
-**Version 0.7.0** — Reference Mascots: the 16 sprites have been redesigned using researched official mascot and logo references. The reference index and attribution notes are in `docs/mascot-references.md`. Player saves remain outside the Git checkout.
+**Version 0.8.0** — Mascot-only Family: the adoption catalog now contains only programming languages with recognized mascots. Logo-only languages and non-language developer tools have been removed. Player saves remain outside the Git checkout.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
