@@ -18,6 +18,22 @@ class Pet:
     cleanliness: int = 90
     emoji: str = "🐾"
     color: str = "#7ee0b5"
+    level: int = 1
+    experience: int = 0
+
+    @property
+    def experience_to_next_level(self) -> int:
+        return max(100, self.level * 100)
+
+    def gain_experience(self, amount: int) -> int:
+        """Add experience and return the number of levels gained."""
+        self.experience += max(0, amount)
+        levels_gained = 0
+        while self.experience >= self.experience_to_next_level:
+            self.experience -= self.experience_to_next_level
+            self.level += 1
+            levels_gained += 1
+        return levels_gained
 
     def clamp(self) -> None:
         for field in ("happiness", "energy", "hunger", "cleanliness"):
@@ -76,6 +92,7 @@ class Pet:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> "Pet":
+        # Older save files do not contain progression fields.
         return cls(**data)
 
 
