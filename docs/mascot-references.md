@@ -35,3 +35,27 @@ companions rather than official mascots; that distinction is recorded below.
 - Other logo references identify the technology visually. CodePaws does not bundle downloaded logo files.
 
 This document is a visual reference index, not a grant of rights to third-party artwork or trademarks.
+
+## Direct image references
+
+These links open the reference images directly where a stable image URL was available. For sources that only publish downloadable brand packs or galleries, the source page above remains the reference.
+
+| Pet | Image |
+|---|---|
+| Py — Python | [Python snakes](https://cdn.hashnode.com/res/hashnode/image/upload/v1685857934497/e110a92f-dff2-4c23-85da-3ba1b57f958d.webp) |
+| Ferris — Rust | [Ferris crab](https://miro.medium.com/1%2An2ny7y9uc9y1pAof5R6nJw.png) · [official artwork site](https://www.rustacean.net/) |
+| Gopher — Go | [Go Gopher](https://miro.medium.com/v2/1%2A4G0n7jErhEpJeSb_0AJ0gw.png) · [official Go article](https://go.dev/blog/gopher) |
+| Duke — Java | [Duke](https://cr.openjdk.java.net/~jeff/Duke/png/Hips.png) |
+| Moby — Docker | [Moby Dock](https://www.paigeniedringhaus.com/images/docker-and-docker-compose/moby-dock.jpeg) |
+| Octocat — GitHub | [Classic Octocat reference](https://blog.irccloud.com/static/octocat.jpg) · [current brand mascot guide](https://brand.github.com/graphic-elements) |
+| Tanuki — GitLab | [Tanuki mark](https://about.gitlab.com/images/blogimages/contribute-through-the-eyes-of-a-new-gitlabber/contribute-through-the-eyes-of-a-new-gitlabber-tanuki.png) |
+| ElePHPant — PHP | [ElePHPant](https://raw.githubusercontent.com/php-earth/PHP.earth/master/assets/images/community/elephpant.png) |
+| Javie — JavaScript | [JS mark](https://2ality.com/2011/10/logo-js/js.jpg) |
+| Tessa — TypeScript | [TS mark](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Typescript.svg/1280px-Typescript.svg.png) |
+| Ruby — Ruby | [Ruby gem](https://siblingssoftware.com/assets/images/ruby-development-outsourcing/ruby-logo-001.png) |
+| Cee — C | [C mark](https://commons.wikimedia.org/wiki/Special:FilePath/C_Language_Logo.svg) |
+| PlusPlus — C++ | [C++ Institute brand resources](https://cppinstitute.org/brand-resources) |
+| Kodee — Kotlin | [Kodee](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Kodee-mascot-regular.svg/1280px-Kodee-mascot-regular.svg.png) |
+| Swiftie — Swift | [Swift bird mark](https://www.kindpng.com/picc/m/17-179376_swift-programming-language-logo-hd-png-download.png) |
+| Camel — Perl | [Perl camel mark](https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Perl-logo.svg/2048px-Perl-logo.svg.png) |
+
