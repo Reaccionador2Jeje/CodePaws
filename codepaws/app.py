@@ -9,6 +9,7 @@ from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import Button, Footer, Header, Static
 
 from .models import PET_CATALOG, Pet, create_pet
+from .sprites import render_pet
 from .storage import load_family, save_family
 
 
@@ -140,6 +141,7 @@ class CodePawsApp(App[None]):
         self.notice = "Welcome home! Your programming family starts here."
         self.active_action: str | None = None
         self.action_ticks = 0
+        self.animation_frame = 0
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
@@ -161,7 +163,7 @@ class CodePawsApp(App[None]):
 
     async def on_mount(self) -> None:
         self.set_interval(60, self.pass_time)
-        self.set_interval(0.8, self.animate_pet)
+        self.set_interval(0.16, self.animate_pet)
         await self.refresh_view()
 
     def action_show_page(self, page: str) -> None:
@@ -288,12 +290,13 @@ class CodePawsApp(App[None]):
         pet = self.selected_pet
         if pet is None or self.page != "home":
             return
+        self.animation_frame += 1
         if self.action_ticks > 0:
             self.action_ticks -= 1
             if self.action_ticks == 0:
                 self.active_action = None
         try:
-            self.query_one("#pet-stage", Static).update(self.pet_visual(pet))
+            self.query_one("#pet-stage", Static).update(render_pet(pet, self.animation_frame, self.active_action))
         except Exception:
             # The home screen may be transitioning between pages.
             pass
@@ -341,9 +344,8 @@ class CodePawsApp(App[None]):
             Static(self.notice, classes="notice"),
             Static(f"Meet {pet.name}  ·  {pet.technology}", classes="page-title"),
             Static(
-                self.pet_visual(pet),
+                render_pet(pet, self.animation_frame, self.active_action),
                 id="pet-stage",
-                markup=True,
             ),
             Static(f"{pet.species}  ·  {pet.mood}  ·  Level {pet.level}", classes="pet-subtitle"),
             Static(pet.personality, classes="muted"),
