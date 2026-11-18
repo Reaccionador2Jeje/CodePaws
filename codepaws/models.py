@@ -84,10 +84,12 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Python",
         "species": "Programming snake",
         "personality": "Curious, friendly and a little sleepy.",
-        "art": r"  /^\/^\\
+        "art": r"""
+  /^\/^\\
  _|  o.o  |_
    \  ^  /
-    |||||",
+    |||||
+""".strip("\n"),
     },
     {
         "pet_id": "rust",
@@ -95,11 +97,13 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Rust",
         "species": "Rustacean crab",
         "personality": "Brave, energetic and protective.",
-        "art": r"  .-"""-.
- /  o o  \\
+        "art": r"""
+  .-'''-.
+ /  o o  \
 |    ^    |
- \\  ---  /
-  '-----'",
+ \  ---  /
+  '-----'
+""".strip("\n"),
     },
     {
         "pet_id": "go",
@@ -107,11 +111,13 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Go",
         "species": "Gopher",
         "personality": "Quick, helpful and hardworking.",
-        "art": r"  .-"""-.
- /  o o  \\
+        "art": r"""
+  .-'''-.
+ /  o o  \
 |    w    |
 |  _____  |
- '-------'",
+ '-------'
+""".strip("\n"),
     },
     {
         "pet_id": "java",
@@ -119,11 +125,13 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Java",
         "species": "Java mascot",
         "personality": "Calm, dependable and elegant.",
-        "art": r"   .---.
-  /     \\
+        "art": r"""
+   .---.
+  /     \
  |  o o  |
  |   ^   |
-  \_____/ ",
+  \_____/
+""".strip("\n"),
     },
     {
         "pet_id": "docker",
@@ -131,10 +139,12 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "Docker",
         "species": "Container whale",
         "personality": "Gentle, big-hearted and always carrying friends.",
-        "art": r"      __
- ___ /  \\___
-/  _| [] []  \\
-\____________/",
+        "art": r"""
+      __
+ ___ /  \___
+/  _| [] []  \
+\____________/
+""".strip("\n"),
     },
     {
         "pet_id": "github",
@@ -142,11 +152,13 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "GitHub",
         "species": "Octocat",
         "personality": "Creative, social and adventurous.",
-        "art": r" /\\_/\\
+        "art": r"""
+ /\\_/\\
 ( o   o )
- /  ^  \\
+ /  ^  \
 /|     |\\
- \_____/ ",
+ \_____/
+""".strip("\n"),
     },
     {
         "pet_id": "gitlab",
@@ -154,11 +166,13 @@ PET_CATALOG: list[dict[str, str]] = [
         "technology": "GitLab",
         "species": "Tanuki",
         "personality": "Organized, clever and collaborative.",
-        "art": r" /\   /\\
+        "art": r"""
+ /\   /\\
 (  o o  )
 (   ^   )
  /|___|\\
-  /   \\",
+  /   \
+""".strip("\n"),
     },
 ]
 
