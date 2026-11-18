@@ -61,6 +61,9 @@ class CodePawsDesktop:
         self.next_wander = time.monotonic() + 2.0
         self.facing_left = False
         # Every adopted companion has an independent position and wander target.
+        self.social_pair: tuple[str, str] | None = None
+        self.social_until = 0.0
+        self.next_social = time.monotonic() + 8.0
         self.pet_motion = {
             pet.pet_id: {
                 "x": 340.0 + (index % 4) * 105,
@@ -230,6 +233,13 @@ class CodePawsDesktop:
             self.label(companion.name, px - 28, py + 1, name_color, self.small)
             if companion.pet_id == self.pet.pet_id:
                 pygame.draw.circle(self.screen, ACCENT, (px, py + 25), 3)
+            if (
+                self.social_pair
+                and companion.pet_id in self.social_pair
+                and time.monotonic() < self.social_until
+            ):
+                heart = self.heading.render("♥", True, (255, 130, 165))
+                self.screen.blit(heart, (px - 10, py - 119))
 
         actions = [
             ("Feed", "feed", (250, 590)),
@@ -322,6 +332,46 @@ class CodePawsDesktop:
                 motion["x"] += dx / distance * speed
                 motion["y"] += dy / distance * speed
                 motion["facing_left"] = dx < 0
+
+        # Occasionally, two friends in the same room meet for a social moment.
+        if self.social_pair and now >= self.social_until:
+            friends = [
+                companion for companion in self.pets
+                if companion.pet_id in self.social_pair
+            ]
+            for friend in friends:
+                friend.happiness = min(100, friend.happiness + 5)
+            if friends:
+                self.notice = (
+                    f"{friends[0].name} and {friends[1].name} had fun together!"
+                )
+                self.save()
+            self.social_pair = None
+
+        if now >= self.next_social and not self.social_pair:
+            rooms: dict[str, list] = {}
+            for companion in self.pets:
+                rooms.setdefault(companion.room, []).append(companion)
+            possible = [members for members in rooms.values() if len(members) >= 2]
+            if possible:
+                group = random.choice(possible)
+                first, second = random.sample(group, 2)
+                first_motion = self.pet_motion[first.pet_id]
+                second_motion = self.pet_motion[second.pet_id]
+                center_x = (
+                    first_motion["x"] + second_motion["x"]
+                ) / 2
+                meet_y = random.uniform(462, 484)
+                first_motion["target_x"] = max(330, min(700, center_x - 34))
+                second_motion["target_x"] = max(330, min(700, center_x + 34))
+                first_motion["target_y"] = meet_y
+                second_motion["target_y"] = meet_y
+                first_motion["next_wander"] = now + 8
+                second_motion["next_wander"] = now + 8
+                self.social_pair = (first.pet_id, second.pet_id)
+                self.social_until = now + 6.0
+                self.notice = f"{first.name} and {second.name} are hanging out!"
+            self.next_social = now + random.uniform(24.0, 38.0)
 
     def move_pet_to(self, x: float, y: float) -> None:
         """Send the selected companion to a point on the room floor."""
