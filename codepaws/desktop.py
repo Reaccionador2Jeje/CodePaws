@@ -30,7 +30,7 @@ class CodePawsDesktop:
 
     def __init__(self) -> None:
         pygame.init()
-        pygame.display.set_caption("CodePaws — Desktop Game Preview")
+        pygame.display.set_caption("CodePaws — Desktop Game")
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("segoeui", 17)
@@ -50,6 +50,8 @@ class CodePawsDesktop:
         self.last_save = self.last_tick
         self.running = True
         self.buttons: list[tuple[pygame.Rect, str, str]] = []
+        self.page = "home"
+        self.notice = "Welcome home! Take good care of your friends."
 
     @property
     def pet(self) -> Pet:
@@ -95,7 +97,8 @@ class CodePawsDesktop:
 
     def draw_sidebar(self) -> None:
         self.label("🐾 CODEPAWS", 32, 31, ACCENT, self.heading)
-        self.label("DESKTOP PREVIEW", 33, 63, MUTED, self.small)
+        self.label("DESKTOP GAME", 33, 63, MUTED, self.small)
+        self.button(pygame.Rect(25, 76, 182, 28), "+ Adopt a friend", "adoption")
         self.label("YOUR FAMILY", 32, 111, MUTED, self.small)
         for index, pet in enumerate(self.pets):
             y = 143 + index * 51
@@ -190,6 +193,30 @@ class CodePawsDesktop:
         for caption, key, (x, y) in actions:
             self.button(pygame.Rect(x, y, 119, 48), caption, f"action:{key}")
 
+    def draw_adoption(self) -> None:
+        """Show the mascot adoption center as an in-game screen."""
+        from .models import PET_CATALOG
+
+        self.label("Adoption Center", 265, 35, TEXT, self.title)
+        self.label("Welcome another programming mascot to your family", 267, 75, MUTED, self.small)
+        self.label(self.notice, 267, 108, ACCENT, self.small)
+        adopted = {pet.pet_id for pet in self.pets}
+        for index, entry in enumerate(PET_CATALOG):
+            y = 145 + index * 51
+            if y > 655:
+                break
+            rect = pygame.Rect(260, y, 500, 43)
+            pygame.draw.rect(self.screen, PANEL_LIGHT, rect, border_radius=9)
+            self.label(entry.get("emoji", "🐾"), 273, y + 7, TEXT, self.heading)
+            self.label(entry["name"], 320, y + 5, TEXT)
+            self.label(entry["technology"], 320, y + 24, MUTED, self.small)
+            if entry["pet_id"] in adopted:
+                caption, key, disabled = "Adopted", "noop", True
+            else:
+                price = 80 if index < 7 else 140
+                caption, key, disabled = f"Adopt · {price} coins", f"adopt:{entry['pet_id']}", self.economy.get("coins", 0) < price
+            self.button(pygame.Rect(610, y + 5, 138, 33), caption, key, disabled=disabled)
+
     def draw_stat(self, name: str, value: int, x: int, y: int, color) -> None:
         self.label(name, x, y, MUTED, self.small)
         self.label(f"{value}%", x + 218, y, TEXT, self.small)
@@ -252,6 +279,23 @@ class CodePawsDesktop:
                 elif key.startswith("room:"):
                     self.pet.room = key.split(":", 1)[1]
                     self.save()
+                elif key == "adoption":
+                    self.page = "adoption"
+                elif key.startswith("adopt:"):
+                    pet_id = key.split(":", 1)[1]
+                    from .models import PET_CATALOG
+                    entry = next((item for item in PET_CATALOG if item["pet_id"] == pet_id), None)
+                    if entry and pet_id not in {pet.pet_id for pet in self.pets}:
+                        index = PET_CATALOG.index(entry)
+                        price = 80 if index < 7 else 140
+                        if self.economy.get("coins", 0) >= price:
+                            self.economy["coins"] -= price
+                            self.pets.append(create_pet(pet_id))
+                            self.selected_pet = pet_id
+                            self.notice = f"Welcome to the family, {entry['name']}!"
+                            self.save()
+                        else:
+                            self.notice = "You need more coins to adopt this friend."
                 elif key.startswith("action:"):
                     self.act(key.split(":", 1)[1])
                 break
@@ -267,6 +311,10 @@ class CodePawsDesktop:
             self.switch_pet(-1)
         elif key == pygame.K_RIGHT:
             self.switch_pet(1)
+        elif key == pygame.K_a:
+            self.page = "adoption"
+        elif key == pygame.K_ESCAPE and self.page == "adoption":
+            self.page = "home"
         elif key in (pygame.K_1, pygame.K_2, pygame.K_3):
             self.pet.room = ROOMS[key - pygame.K_1][0]
             self.save()
@@ -286,7 +334,7 @@ class CodePawsDesktop:
                 if event.type == pygame.QUIT:
                     self.running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE and self.page == "home":
                         self.running = False
                     else:
                         self.handle_key(event.key)
@@ -296,8 +344,11 @@ class CodePawsDesktop:
             self.buttons = []
             self.draw_background()
             self.draw_sidebar()
-            self.draw_room()
-            self.draw_stats()
+            if self.page == "adoption":
+                self.draw_adoption()
+            else:
+                self.draw_room()
+                self.draw_stats()
             pygame.display.flip()
             self.clock.tick(30)
 
