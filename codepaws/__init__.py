@@ -1,3 +1,3 @@
 """CodePaws: a little home for the world of code."""
 
-__version__ = "0.6.3"
+__version__ = "0.7.0"
