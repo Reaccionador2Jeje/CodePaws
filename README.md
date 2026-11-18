@@ -79,7 +79,7 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Project status
 
-**Version 0.6.2** — Safe Progress: player saves live in the operating-system user data folder, outside the Git checkout, and existing project-local saves are migrated automatically on first launch.
+**Version 0.6.3** — Mascot Art Refresh: all 16 companions have friendlier, more distinctive pixel-art designs. Official mascot characters are represented as fan-made interpretations; technologies without an official mascot use original CodePaws companions. Player saves remain outside the Git checkout.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
