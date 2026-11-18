@@ -74,7 +74,7 @@ class CodePawsApp(App[None]):
         color: #e8f1f2;
         content-align: center middle;
         height: auto;
-        min-height: 13;
+        min-height: 17;
         width: 1fr;
         border: round #42616d;
         margin: 1 0;
@@ -365,23 +365,40 @@ class CodePawsApp(App[None]):
         return f"[bold #f4d58d]◉ {self.coins} coins[/]    [bold #8bd5ff]◆ {self.gems} gems[/]"
 
     def pet_visual(self, pet: Pet) -> str:
-        """Build a colorful, responsive mascot card with Rich markup."""
-        action_messages = {
-            "feed": "🍪  SNACK TIME!  •  YUM YUM!",
-            "play": "🎉  PLAY MODE!  •  WHEEEE!",
-            "sleep": "💤  NAP TIME  •  Zzz...",
-            "bath": "🫧  SPLASH!  •  FRESH & CLEAN",
+        """Render a colorful pixel-art mascot directly in the terminal."""
+        sprites = {
+            "python": ["....#####..", "...#######.", "..#########", ".###.###.###", ".###########", "..#########.", "...#######..", "....#####...", ".....###...."],
+            "rust": ["..##.....##.", ".###.....###", "#############", "##.##.##.##.##", "#############", ".###########.", "..##.###.##..", ".##..###..##.", "##.........##"],
+            "go": ["...##...##...", "..#########..", ".###########.", "###.##.##.###", "#############", ".###########.", "..#########..", "...#######...", "....#####...."],
+            "docker": ["....####.....", "..#########..", "#############", "##.##.##.##.##", "#############", ".###########.", "..#########..", "...#######...", "....#####...."],
         }
-        reaction = action_messages.get(self.active_action, "✨  HAPPY TO BE HERE  ✨")
-        color = pet.color
-        return (
-            f"[bold {color}]{pet.emoji}[/]\n"
-            f"[bold white]{pet.name}[/]\n"
-            f"[bold {color}]{pet.technology.upper()}[/]\n"
-            f"[dim]{pet.species}[/]\n"
-            f"[bold white]{reaction}[/]"
-        )
-
+        sprite = sprites.get(pet.pet_id, ["....#####....", "...#######...", "..#########..", ".###########.", "###.#####.###", "#############", ".###########.", "..#########..", "...#######..."])
+        body, outline = pet.color, "#263746"
+        rows = []
+        for y, row in enumerate(sprite):
+            cells = []
+            for x, pixel in enumerate(row):
+                if pixel == ".":
+                    cells.append("    ")
+                elif pixel == "#":
+                    cells.append(f"[on {body}]  [/on {body}]")
+                else:
+                    cells.append(f"[on {outline}]  [/on {outline}]")
+            rows.append("".join(cells))
+        # Add a pair of expressive eyes and a small smile using foreground ink.
+        eye_row = list(sprite[4])
+        eye_row[3:5], eye_row[8:10] = list("ee"), list("ee")
+        mouth_row = list(sprite[6])
+        mouth_row[5] = "m"
+        for index, pixel in enumerate(eye_row):
+            if pixel == "e":
+                rows[4] = rows[4][:index * 4] + f"[bold #101820 on {body}]● [/bold #101820 on {body}]" + rows[4][index * 4 + 4:]
+        for index, pixel in enumerate(mouth_row):
+            if pixel == "m":
+                rows[6] = rows[6][:index * 4] + f"[bold #101820 on {body}]ᴗ [/bold #101820 on {body}]" + rows[6][index * 4 + 4:]
+        reactions = {"feed": "🍪  SNACK TIME!", "play": "🎉  PLAY MODE!", "sleep": "💤  NAP TIME", "bath": "🫧  SPLASH TIME!"}
+        reaction = reactions.get(self.active_action, "✨  HAPPY TO BE HERE  ✨")
+        return "\n".join(rows) + f"\n\n[bold white]{pet.name}[/]  [bold {pet.color}]{pet.technology.upper()}[/]\n[dim]{pet.species}[/]\n[bold white]{reaction}[/]"
     @staticmethod
     def stat_line(label: str, value: int) -> str:
         filled = round(value / 10)
