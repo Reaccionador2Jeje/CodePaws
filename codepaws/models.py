@@ -271,12 +271,12 @@ PET_CATALOG: list[dict[str, str]] = [
     },
     {
         "pet_id": "kotlin",
-        "name": "Koko",
+        "name": "Kodee",
         "technology": "Kotlin",
-        "species": "Kotlin Koala",
-        "personality": "Curious, cuddly and loves mobile adventures.",
-        "art": "🐈",
-        "emoji": "🐈",
+        "species": "Kotlin mascot",
+        "personality": "Friendly, expressive and always ready to help.",
+        "art": "🤖",
+        "emoji": "🤖",
         "color": "#a97bff",
     },
     {
