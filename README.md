@@ -12,7 +12,11 @@ CodePaws is a full-screen terminal virtual-pet simulator. Adopt mascots inspired
 - Feed, play with, let sleep, and bathe your pets.
 - Happiness, energy, hunger and cleanliness statistics.
 - Family album and pet selection.
-- Automatic JSON save file at `data/save.json`.
+- Coin and gem wallet with persistent balances.
+- Earn coins by caring for pets, with a short reward cooldown to prevent button-spamming.
+- Earn bonus gems when your family reaches 3, 6 and 10 pets.
+- Mascots have rising adoption prices; rare friends also require gems.
+- Automatic JSON saves for pets and wallet data.
 - Keyboard shortcuts and terminal resizing support.
 
 ## Requirements
@@ -68,7 +72,7 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Project status
 
-**Version 0.3.0** — Colorful mascot cards and an expanded 16-pet adoption center.
+**Version 0.4.0** — Coin-and-gem economy, priced adoptions and family milestones.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
