@@ -41,6 +41,9 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install pyinstaller
 
+      - name: Check Python syntax
+        run: python -m compileall -q codepaws desktop_game.py
+
       - name: Build desktop executable
         run: pyinstaller --noconfirm --clean --windowed --name CodePaws --collect-all pygame --collect-all PIL desktop_game.py
 
