@@ -16,6 +16,8 @@ class Pet:
     energy: int = 75
     hunger: int = 20
     cleanliness: int = 90
+    emoji: str = "🐾"
+    color: str = "#7ee0b5"
 
     def clamp(self) -> None:
         for field in ("happiness", "energy", "hunger", "cleanliness"):
@@ -173,6 +175,96 @@ PET_CATALOG: list[dict[str, str]] = [
  /|___|\\
   /   \
 """.strip("\n"),
+    },
+        {
+        "pet_id": "php",
+        "name": "ElePHPant",
+        "technology": "PHP",
+        "species": "Blue elephant",
+        "personality": "Friendly, patient and great at carrying web projects.",
+        "art": "🐘",
+        "emoji": "🐘",
+        "color": "#8899ff",
+    },
+    {
+        "pet_id": "javascript",
+        "name": "Javie",
+        "technology": "JavaScript",
+        "species": "Yellow script sprite",
+        "personality": "Playful, energetic and always experimenting.",
+        "art": "🟨",
+        "emoji": "🟨",
+        "color": "#f7df1e",
+    },
+    {
+        "pet_id": "typescript",
+        "name": "Tessa",
+        "technology": "TypeScript",
+        "species": "Blue crystal sprite",
+        "personality": "Careful, clever and loves clear structure.",
+        "art": "💠",
+        "emoji": "💠",
+        "color": "#3178c6",
+    },
+    {
+        "pet_id": "ruby",
+        "name": "Ruby",
+        "technology": "Ruby",
+        "species": "Gem creature",
+        "personality": "Creative, warm and loves elegant solutions.",
+        "art": "💎",
+        "emoji": "💎",
+        "color": "#e45b75",
+    },
+    {
+        "pet_id": "c",
+        "name": "Cee",
+        "technology": "C",
+        "species": "Tiny robot",
+        "personality": "Simple, fast and close to the machine.",
+        "art": "🤖",
+        "emoji": "🤖",
+        "color": "#a8b3c2",
+    },
+    {
+        "pet_id": "cpp",
+        "name": "PlusPlus",
+        "technology": "C++",
+        "species": "Gear robot",
+        "personality": "Powerful, inventive and loves building things.",
+        "art": "⚙️",
+        "emoji": "⚙️",
+        "color": "#659ad2",
+    },
+    {
+        "pet_id": "kotlin",
+        "name": "Koko",
+        "technology": "Kotlin",
+        "species": "Purple cat",
+        "personality": "Expressive, modern and loves mobile adventures.",
+        "art": "🐈",
+        "emoji": "🐈",
+        "color": "#a97bff",
+    },
+    {
+        "pet_id": "swift",
+        "name": "Swiftie",
+        "technology": "Swift",
+        "species": "Swift bird",
+        "personality": "Quick, bright and loves smooth experiences.",
+        "art": "🐦",
+        "emoji": "🐦",
+        "color": "#f28c45",
+    },
+    {
+        "pet_id": "perl",
+        "name": "Camel",
+        "technology": "Perl",
+        "species": "Desert camel",
+        "personality": "Resourceful, adaptable and full of surprises.",
+        "art": "🐪",
+        "emoji": "🐪",
+        "color": "#54a6a6",
     },
 ]
 
