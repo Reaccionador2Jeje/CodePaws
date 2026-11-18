@@ -595,7 +595,7 @@ class CodePawsApp(App[None]):
     def build_about_page(self) -> list:
         return [
             Static("ABOUT CODEPAWS", classes="page-title"),
-            Static("CodePaws 0.8.0 — Mascot-only Family"),
+            Static("CodePaws 0.8.1 — Mascot Family"),
             Static(
                 "A full-screen terminal pet simulator where programming "
                 "languages, tools and platforms become digital companions."
