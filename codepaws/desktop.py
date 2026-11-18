@@ -60,6 +60,18 @@ class CodePawsDesktop:
         self.target_y = self.pet_y
         self.next_wander = time.monotonic() + 2.0
         self.facing_left = False
+        # Every adopted companion has an independent position and wander target.
+        self.pet_motion = {
+            pet.pet_id: {
+                "x": 340.0 + (index % 4) * 105,
+                "y": 463.0 + (index % 2) * 22,
+                "target_x": 340.0 + (index % 4) * 105,
+                "target_y": 463.0 + (index % 2) * 22,
+                "next_wander": time.monotonic() + 1.0 + index * 0.7,
+                "facing_left": False,
+            }
+            for index, pet in enumerate(self.pets)
+        }
 
     @property
     def pet(self) -> Pet:
@@ -183,20 +195,41 @@ class CodePawsDesktop:
             for x, y in ((430, 180), (590, 260), (350, 260), (620, 450)):
                 pygame.draw.circle(self.screen, (255, 224, 139), (x, y), 4)
 
-        # Companion wanders freely around the room's walkable floor.
-        pygame.draw.ellipse(
-            self.screen, (48, 57, 62),
-            (int(self.pet_x - 43), int(self.pet_y - 9), 86, 19),
-        )
-        action = self.active_action if time.monotonic() < self.action_until else None
-        sprite = _draw(self.pet, self.frame, action)
-        pet_surface = pygame.image.fromstring(sprite.tobytes(), sprite.size, "RGB")
-        pet_surface = pygame.transform.scale(pet_surface, (144, 144))
-        if self.facing_left:
-            pet_surface = pygame.transform.flip(pet_surface, True, False)
-        self.screen.blit(pet_surface, (int(self.pet_x - 72), int(self.pet_y - 139)))
-        self.label(self.pet.name, int(self.pet_x - 35), int(self.pet_y + 2), TEXT, self.heading)
-        self.label(self.pet.mood, int(self.pet_x - 25), int(self.pet_y + 31), MUTED, self.small)
+        # Every companion assigned to this room is visible at the same time.
+        visible_pets = [
+            companion for companion in self.pets if companion.room == room
+        ]
+        for companion in sorted(
+            visible_pets,
+            key=lambda item: self.pet_motion.get(item.pet_id, {}).get("y", 468),
+        ):
+            motion = self.pet_motion.setdefault(companion.pet_id, {
+                "x": 510.0, "y": 468.0, "target_x": 510.0,
+                "target_y": 468.0, "next_wander": time.monotonic() + 1,
+                "facing_left": False,
+            })
+            px, py = int(motion["x"]), int(motion["y"])
+            pygame.draw.ellipse(
+                self.screen, (48, 57, 62), (px - 34, py - 8, 68, 16)
+            )
+            action = (
+                self.active_action
+                if companion.pet_id == self.pet.pet_id
+                and time.monotonic() < self.action_until
+                else None
+            )
+            sprite = _draw(companion, self.frame, action)
+            pet_surface = pygame.image.fromstring(
+                sprite.tobytes(), sprite.size, "RGB"
+            )
+            pet_surface = pygame.transform.scale(pet_surface, (112, 112))
+            if motion["facing_left"]:
+                pet_surface = pygame.transform.flip(pet_surface, True, False)
+            self.screen.blit(pet_surface, (px - 56, py - 108))
+            name_color = ACCENT if companion.pet_id == self.pet.pet_id else TEXT
+            self.label(companion.name, px - 28, py + 1, name_color, self.small)
+            if companion.pet_id == self.pet.pet_id:
+                pygame.draw.circle(self.screen, ACCENT, (px, py + 25), 3)
 
         actions = [
             ("Feed", "feed", (250, 590)),
@@ -262,28 +295,44 @@ class CodePawsDesktop:
         self.label("1 / 2 / 3  change room", 824, 669, MUTED, self.small)
 
     def update_pet_motion(self, dt: float, now: float) -> None:
-        """Move the companion smoothly and choose a new idle destination."""
+        """Move every adopted companion independently around its own room."""
         if self.page != "home":
             return
-        if now >= self.next_wander and abs(self.pet_x - self.target_x) < 5:
-            self.target_x = random.uniform(320, 710)
-            self.target_y = random.uniform(452, 493)
-            self.next_wander = now + random.uniform(2.0, 4.5)
+        for index, companion in enumerate(self.pets):
+            motion = self.pet_motion.setdefault(companion.pet_id, {
+                "x": 350.0 + (index % 4) * 95,
+                "y": 463.0 + (index % 2) * 22,
+                "target_x": 350.0 + (index % 4) * 95,
+                "target_y": 463.0 + (index % 2) * 22,
+                "next_wander": now + 1.0 + index * 0.5,
+                "facing_left": False,
+            })
+            if now >= motion["next_wander"] and abs(
+                motion["x"] - motion["target_x"]
+            ) < 5:
+                motion["target_x"] = random.uniform(320, 710)
+                motion["target_y"] = random.uniform(452, 493)
+                motion["next_wander"] = now + random.uniform(2.0, 4.5)
 
-        dx = self.target_x - self.pet_x
-        dy = self.target_y - self.pet_y
-        distance = (dx * dx + dy * dy) ** 0.5
-        if distance > 1:
-            speed = min(distance, 78 * dt)
-            self.pet_x += dx / distance * speed
-            self.pet_y += dy / distance * speed
-            self.facing_left = dx < 0
+            dx = motion["target_x"] - motion["x"]
+            dy = motion["target_y"] - motion["y"]
+            distance = (dx * dx + dy * dy) ** 0.5
+            if distance > 1:
+                speed = min(distance, 68 * dt)
+                motion["x"] += dx / distance * speed
+                motion["y"] += dy / distance * speed
+                motion["facing_left"] = dx < 0
 
     def move_pet_to(self, x: float, y: float) -> None:
-        """Send the selected pet to a point on the room floor."""
-        self.target_x = max(320.0, min(710.0, x))
-        self.target_y = max(452.0, min(493.0, y))
-        self.next_wander = time.monotonic() + 3.0
+        """Send the selected companion to a point on the room floor."""
+        motion = self.pet_motion.setdefault(self.pet.pet_id, {
+            "x": 510.0, "y": 468.0, "target_x": 510.0,
+            "target_y": 468.0, "next_wander": time.monotonic() + 1,
+            "facing_left": False,
+        })
+        motion["target_x"] = max(320.0, min(710.0, x))
+        motion["target_y"] = max(452.0, min(493.0, y))
+        motion["next_wander"] = time.monotonic() + 3.0
 
     def act(self, action: str) -> None:
         messages = {
