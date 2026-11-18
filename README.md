@@ -2,7 +2,7 @@
 
 **Your Programming Family — A Little Home for the World of Code**
 
-CodePaws is an open-source virtual-pet project with a full-screen terminal simulator and a playable pixel-art desktop game preview. Adopt programming languages that have recognized mascots, take care of them, and grow your own programming family.
+CodePaws is an open-source virtual-pet project with a full-screen terminal simulator and a playable pixel-art desktop game. Adopt programming languages that have recognized mascots, take care of them, and grow your own programming family.
 
 ## Features
 
@@ -19,6 +19,8 @@ CodePaws is an open-source virtual-pet project with a full-screen terminal simul
 - Every pet has its own personality and mood description.
 - Family album and pet selection.
 - Three-room home: living room, bedroom and garden.
+- Companions roam the room autonomously, turn toward their direction of travel, and respond to floor clicks.
+- Clickable room objects invite pets to visit the sofa, bed or garden.
 - Move adopted pets between rooms.
 - Accessory shop with pixel cap, bow, glasses and crown.
 - Owned accessories persist and can be equipped on different pets.
@@ -55,7 +57,7 @@ To launch the desktop game:
 python desktop_game.py
 ```
 
-The TUI takes over the terminal while it is running; press **Q** to quit. In the desktop game, press **A** to open the Adoption Center, **Esc** to return home from that screen, or **Esc** from the home screen to quit. You can also click the in-game buttons.
+The TUI takes over the terminal while it is running; press **Q** to quit. In the desktop game, press **A** to open the Adoption Center, click the floor to guide your pet, and click room objects to invite it over. Press **Esc** to return home from the Adoption Center, or **Esc** from the home screen to quit.
 
 ## Keyboard shortcuts
 
@@ -99,7 +101,7 @@ Only languages with an established mascot are included:
 
 ## Project status
 
-**Version 0.9.0-dev** — Desktop Game: an early playable Pygame-CE desktop experience is available alongside the existing TUI. Windows and Linux packages are built by GitHub Actions; pushing a version tag such as `v0.9.0` creates a GitHub Release with downloadable builds. **Version 0.8.1** — Mascot Family: the catalog includes languages and developer tools with recognized mascots. Logo-only entries without mascots remain excluded. Player saves remain outside the Git checkout.
+**Version 0.9.0-dev** — Desktop Game: a playable Pygame-CE desktop experience with autonomous pet roaming is available alongside the existing TUI. Windows and Linux packages are built by GitHub Actions; pushing a version tag such as `v0.9.0` creates a GitHub Release with downloadable builds. **Version 0.8.1** — Mascot Family: the catalog includes languages and developer tools with recognized mascots. Logo-only entries without mascots remain excluded. Player saves remain outside the Git checkout.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
