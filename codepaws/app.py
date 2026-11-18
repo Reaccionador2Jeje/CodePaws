@@ -463,7 +463,7 @@ class CodePawsApp(App[None]):
         widgets = [
             Static("ADOPTION CENTER", classes="page-title"),
             Static(
-                "Every language and tool deserves a loving home. "
+                "Adopt a programming language with a real mascot. "
                 "Choose your next family member!",
                 classes="muted",
             ),
@@ -595,7 +595,7 @@ class CodePawsApp(App[None]):
     def build_about_page(self) -> list:
         return [
             Static("ABOUT CODEPAWS", classes="page-title"),
-            Static("CodePaws 0.7.0 — Reference Mascots"),
+            Static("CodePaws 0.8.0 — Mascot-only Family"),
             Static(
                 "A full-screen terminal pet simulator where programming "
                 "languages, tools and platforms become digital companions."
