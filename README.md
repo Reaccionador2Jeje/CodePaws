@@ -2,11 +2,12 @@
 
 **Your Programming Family — A Little Home for the World of Code**
 
-CodePaws is a full-screen terminal virtual-pet simulator. Adopt programming languages that have recognized mascots, take care of them, and grow your own programming family.
+CodePaws is an open-source virtual-pet project with a full-screen terminal simulator and a playable pixel-art desktop game preview. Adopt programming languages that have recognized mascots, take care of them, and grow your own programming family.
 
 ## Features
 
 - Full-screen TUI powered by [Textual](https://textual.textualize.io/).
+- Desktop game preview powered by [Pygame-CE](https://pyga.me/), with animated pixel-art pets, interactive rooms and care actions.
 - Reference-informed 48×48 pixel-art companions rendered with terminal true-color pixels.
 - Mascot/logo reference index with source links and attribution notes (`docs/mascot-references.md`).
 - Animated idle bobbing, blinking and care-action effects.
@@ -46,6 +47,12 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
+To launch the desktop game preview:
+
+```bash
+python desktop_game.py
+```
+
 The application takes over the terminal while it is running. Press **Q** to quit and return to your shell.
 
 ## Keyboard shortcuts
@@ -76,7 +83,7 @@ Only languages with an established mascot are included:
 
 ## Project status
 
-**Version 0.8.1** — Mascot Family: the catalog includes languages and developer tools with recognized mascots. Logo-only entries without mascots remain excluded. Player saves remain outside the Git checkout.
+**Version 0.9.0-dev** — Desktop Game Preview: an early playable Pygame-CE desktop experience is available alongside the existing TUI. **Version 0.8.1** — Mascot Family: the catalog includes languages and developer tools with recognized mascots. Logo-only entries without mascots remain excluded. Player saves remain outside the Git checkout.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
