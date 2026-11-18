@@ -309,5 +309,5 @@ def render_pet(pet, frame=0, action=None):
             background = "#{:02x}{:02x}{:02x}".format(*bottom)
             output.append("▀", Style(color=foreground, bgcolor=background))
         if y < SIZE - 2:
-            output.append("\\n")
+            output.append("\n")
     return output
