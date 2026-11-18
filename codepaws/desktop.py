@@ -67,6 +67,8 @@ class CodePawsDesktop:
         # Bowls are shared room objects; each serving can feed one companion.
         self.food_bowls: dict[str, dict[str, int]] = {}
         self.pet_food_cooldown: dict[str, float] = {}
+        self.pet_sleeping_until: dict[str, float] = {}
+        self.pet_sleep_cooldown: dict[str, float] = {}
         self.pet_motion = {
             pet.pet_id: {
                 "x": 340.0 + (index % 4) * 105,
@@ -247,6 +249,9 @@ class CodePawsDesktop:
             self.label(companion.name, px - 28, py + 1, name_color, self.small)
             if companion.pet_id == self.pet.pet_id:
                 pygame.draw.circle(self.screen, ACCENT, (px, py + 25), 3)
+            if time.monotonic() < self.pet_sleeping_until.get(companion.pet_id, 0):
+                zzz = self.heading.render("Z z z", True, (220, 222, 255))
+                self.screen.blit(zzz, (px + 24, py - 112))
             if (
                 self.social_pair
                 and companion.pet_id in self.social_pair
@@ -333,6 +338,17 @@ class CodePawsDesktop:
             })
             bowl = self.food_bowls.get(companion.room)
             cooldown = self.pet_food_cooldown.get(companion.pet_id, 0.0)
+            sleep_cooldown = self.pet_sleep_cooldown.get(companion.pet_id, 0.0)
+            seeking_sleep = bool(
+                companion.room == "bedroom"
+                and companion.energy <= 20
+                and now >= sleep_cooldown
+            )
+            if seeking_sleep:
+                motion["target_x"] = 405.0
+                motion["target_y"] = 445.0
+                motion["next_wander"] = now + 12.0
+
             seeking_food = bool(
                 bowl and bowl["servings"] > 0
                 and companion.hunger >= 30 and now >= cooldown
@@ -356,6 +372,18 @@ class CodePawsDesktop:
                 motion["x"] += dx / distance * speed
                 motion["y"] += dy / distance * speed
                 motion["facing_left"] = dx < 0
+
+            # A tired companion rests automatically in the bedroom.
+            if (
+                seeking_sleep
+                and (motion["x"] - 405.0) ** 2
+                + (motion["y"] - 445.0) ** 2 < 25 ** 2
+            ):
+                companion.sleep()
+                self.pet_sleep_cooldown[companion.pet_id] = now + 45.0
+                self.pet_sleeping_until[companion.pet_id] = now + 4.0
+                self.notice = f"{companion.name} is taking a nap."
+                self.save()
 
             # Reaching the bowl consumes one serving and feeds this companion.
             if (
@@ -498,8 +526,8 @@ class CodePawsDesktop:
                 self.move_pet_to(380, 466)
                 self.notice = f"{self.pet.name} is visiting the sofa."
             elif room == "bedroom" and 280 <= x <= 500 and 320 <= y <= 430:
-                self.move_pet_to(420, 466)
-                self.notice = f"{self.pet.name} is visiting the bed."
+                self.move_pet_to(405, 445)
+                self.notice = f"{self.pet.name} is heading to the bed."
             elif room == "garden" and (x < 390 or x > 650):
                 self.move_pet_to(520, 466)
                 self.notice = f"{self.pet.name} is exploring the garden."
