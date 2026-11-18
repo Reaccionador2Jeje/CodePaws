@@ -427,6 +427,7 @@ class CodePawsApp(App[None]):
     def build_family_page(self) -> list:
         widgets = [
             Static("YOUR PROGRAMMING FAMILY", classes="page-title"),
+            Static(self.wallet_line(), classes="wallet"),
             Static(self.notice, classes="notice"),
         ]
         if not self.pets:
