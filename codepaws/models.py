@@ -104,21 +104,7 @@ class Pet:
 
 
 PET_CATALOG: list[dict[str, str]] = [
-    {
-        "pet_id": "python",
-        "name": "Py",
-        "technology": "Python",
-        "species": "Programming snake",
-        "personality": "Curious, friendly and a little sleepy.",
-        "emoji": "🐍",
-        "color": "#4caf50",
-        "art": r"""
-  /^\/^\\
- _|  o.o  |_
-   \  ^  /
-    |||||
-""".strip("\n"),
-    },
+
     {
         "pet_id": "rust",
         "name": "Ferris",
@@ -167,53 +153,9 @@ PET_CATALOG: list[dict[str, str]] = [
   \_____/
 """.strip("\n"),
     },
-    {
-        "pet_id": "docker",
-        "name": "Moby",
-        "technology": "Docker",
-        "species": "Container whale",
-        "personality": "Gentle, big-hearted and always carrying friends.",
-        "emoji": "🐳",
-        "color": "#249bd3",
-        "art": r"""
-      __
- ___ /  \___
-/  _| [] []  \
-\____________/
-""".strip("\n"),
-    },
-    {
-        "pet_id": "github",
-        "name": "Mona",
-        "technology": "GitHub",
-        "species": "Cat-octopus",
-        "personality": "Creative, social and adventurous.",
-        "emoji": "🐙",
-        "color": "#9b6bd3",
-        "art": r"""
- /\\_/\\
-( o   o )
- /  ^  \
-/|     |\\
- \_____/
-""".strip("\n"),
-    },
-    {
-        "pet_id": "gitlab",
-        "name": "Tanuki",
-        "technology": "GitLab",
-        "species": "Tanuki",
-        "personality": "Organized, clever and collaborative.",
-        "emoji": "🦝",
-        "color": "#f28c45",
-        "art": r"""
- /\   /\\
-(  o o  )
-(   ^   )
- /|___|\\
-  /   \
-""".strip("\n"),
-    },
+
+
+
     {
         "pet_id": "php",
         "name": "ElePHPant",
@@ -224,56 +166,11 @@ PET_CATALOG: list[dict[str, str]] = [
         "emoji": "🐘",
         "color": "#8899ff",
     },
-    {
-        "pet_id": "javascript",
-        "name": "Javie",
-        "technology": "JavaScript",
-        "species": "Yellow script sprite",
-        "personality": "Playful, energetic and always experimenting.",
-        "art": "🟨",
-        "emoji": "🟨",
-        "color": "#f7df1e",
-    },
-    {
-        "pet_id": "typescript",
-        "name": "Tessa",
-        "technology": "TypeScript",
-        "species": "Blue crystal sprite",
-        "personality": "Careful, clever and loves clear structure.",
-        "art": "💠",
-        "emoji": "💠",
-        "color": "#3178c6",
-    },
-    {
-        "pet_id": "ruby",
-        "name": "Ruby",
-        "technology": "Ruby",
-        "species": "Gem creature",
-        "personality": "Creative, warm and loves elegant solutions.",
-        "art": "💎",
-        "emoji": "💎",
-        "color": "#e45b75",
-    },
-    {
-        "pet_id": "c",
-        "name": "Cee",
-        "technology": "C",
-        "species": "Tiny robot",
-        "personality": "Simple, fast and close to the machine.",
-        "art": "🤖",
-        "emoji": "🤖",
-        "color": "#a8b3c2",
-    },
-    {
-        "pet_id": "cpp",
-        "name": "PlusPlus",
-        "technology": "C++",
-        "species": "Gear robot",
-        "personality": "Powerful, inventive and loves building things.",
-        "art": "⚙️",
-        "emoji": "⚙️",
-        "color": "#659ad2",
-    },
+
+
+
+
+
     {
         "pet_id": "kotlin",
         "name": "Kodee",
@@ -284,26 +181,8 @@ PET_CATALOG: list[dict[str, str]] = [
         "emoji": "🤖",
         "color": "#a97bff",
     },
-    {
-        "pet_id": "swift",
-        "name": "Swiftie",
-        "technology": "Swift",
-        "species": "Swift bird",
-        "personality": "Quick, bright and loves smooth experiences.",
-        "art": "🐦",
-        "emoji": "🐦",
-        "color": "#f28c45",
-    },
-    {
-        "pet_id": "perl",
-        "name": "Camel",
-        "technology": "Perl",
-        "species": "Desert camel",
-        "personality": "Resourceful, adaptable and full of surprises.",
-        "art": "🐪",
-        "emoji": "🐪",
-        "color": "#54a6a6",
-    },
+
+
 ]
 
 
