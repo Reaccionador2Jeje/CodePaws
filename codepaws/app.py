@@ -302,7 +302,7 @@ class CodePawsApp(App[None]):
         ]
 
     def pet_visual(self, pet: Pet) -> str:
-        """Build a colorful, modern Rich card instead of ASCII art."""
+        """Build a colorful, responsive mascot card with Rich markup."""
         action_messages = {
             "feed": "🍪  SNACK TIME!  •  YUM YUM!",
             "play": "🎉  PLAY MODE!  •  WHEEEE!",
@@ -312,16 +312,11 @@ class CodePawsApp(App[None]):
         reaction = action_messages.get(self.active_action, "✨  HAPPY TO BE HERE  ✨")
         color = pet.color
         return (
-            f"[bold {color}]╭────────────────────────────────────────────────────────────╮[/]\n"
-            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
-            f"[bold {color}]│[/]                    [bold {color}]{pet.emoji}[/]                      [bold {color}]│[/]\n"
-            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
-            f"[bold {color}]│[/]             [bold white]{pet.name}[/]  [dim]the {pet.species}[/]             [bold {color}]│[/]\n"
-            f"[bold {color}]│[/]                 [bold {color}]{pet.technology}[/]                  [bold {color}]│[/]\n"
-            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
-            f"[bold {color}]│[/]              [bold white]{reaction}[/]               [bold {color}]│[/]\n"
-            f"[bold {color}]│[/]                                                            [bold {color}]│[/]\n"
-            f"[bold {color}]╰────────────────────────────────────────────────────────────╯[/]"
+            f"[bold {color}]{pet.emoji}[/]\n"
+            f"[bold white]{pet.name}[/]\n"
+            f"[bold {color}]{pet.technology.upper()}[/]\n"
+            f"[dim]{pet.species}[/]\n"
+            f"[bold white]{reaction}[/]"
         )
 
     @staticmethod
