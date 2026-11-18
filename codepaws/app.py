@@ -241,6 +241,11 @@ class CodePawsApp(App[None]):
                 self.notice += f"  (+{earned} coins)"
             elif before != after:
                 self.notice += "  (Coin reward cooldown: wait a few seconds.)"
+            if before != after:
+                levels = pet.gain_experience(12)
+                self.notice += "  (+12 XP)"
+                if levels:
+                    self.notice += f"  ✨ LEVEL UP! {pet.name} reached level {pet.level}!"
             self.active_action = action
             self.action_ticks = 10
 
@@ -340,8 +345,9 @@ class CodePawsApp(App[None]):
                 id="pet-stage",
                 markup=True,
             ),
-            Static(f"{pet.species}  ·  {pet.mood}", classes="pet-subtitle"),
+            Static(f"{pet.species}  ·  {pet.mood}  ·  Level {pet.level}", classes="pet-subtitle"),
             Static(pet.personality, classes="muted"),
+            Static(self.experience_line(pet), classes="stat"),
             Static(self.stat_line("Happiness", pet.happiness), classes="stat"),
             Static(self.stat_line("Energy", pet.energy), classes="stat"),
             Static(self.stat_line("Fullness", 100 - pet.hunger), classes="stat"),
@@ -392,6 +398,13 @@ class CodePawsApp(App[None]):
         reactions = {"feed": "🍪  SNACK TIME!", "play": "🎉  PLAY MODE!", "sleep": "💤  NAP TIME", "bath": "🫧  SPLASH TIME!"}
         reaction = reactions.get(self.active_action, "✨  HAPPY TO BE HERE  ✨")
         return "\n".join(rows) + f"\n\n[bold white]{pet.name}[/]  [bold {pet.color}]{pet.technology.upper()}[/]\n[dim]{pet.species}[/]\n[bold white]{reaction}[/]"
+    @staticmethod
+    def experience_line(pet: Pet) -> str:
+        required = pet.experience_to_next_level
+        filled = round((pet.experience / required) * 12)
+        bar = "█" * filled + "░" * (12 - filled)
+        return f"[bold #8bd5ff]EXPERIENCE[/] [#8bd5ff]{bar}[/] {pet.experience}/{required} XP"
+
     @staticmethod
     def stat_line(label: str, value: int) -> str:
         filled = round(value / 10)
@@ -450,7 +463,7 @@ class CodePawsApp(App[None]):
             widgets.append(
                 Static(
                     f"{'★ ' if selected else ''}{pet.emoji}  [bold {pet.color}]{pet.name}[/] — {pet.technology} "
-                    f"| {pet.mood} | Happiness {pet.happiness}%",
+                    f"| Level {pet.level} | {pet.mood} | Happiness {pet.happiness}%",
                     classes="catalog-card",
                 )
             )
@@ -467,7 +480,7 @@ class CodePawsApp(App[None]):
     def build_about_page(self) -> list:
         return [
             Static("ABOUT CODEPAWS", classes="page-title"),
-            Static("CodePaws 0.4.0 — Your Programming Family"),
+            Static("CodePaws 0.5.0 — Your Programming Family"),
             Static(
                 "A full-screen terminal pet simulator where programming "
                 "languages, tools and platforms become digital companions."
