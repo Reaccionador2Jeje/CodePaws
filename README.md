@@ -21,6 +21,7 @@ CodePaws is an open-source virtual-pet project with a full-screen terminal simul
 - Three-room home: living room, bedroom and garden.
 - Multiple adopted companions can share a room and remain visible together.
 - Every companion roams independently, turns toward its direction of travel, and responds to floor clicks when selected.
+- Friends occasionally meet in the same room, gather together, show heart effects, and gain happiness from social time.
 - Room membership is individual: move one friend to another room while the rest continue living elsewhere.
 - Clickable room objects invite pets to visit the sofa, bed or garden.
 - Move adopted pets between rooms.
