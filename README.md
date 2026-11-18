@@ -15,6 +15,10 @@ CodePaws is a full-screen terminal virtual-pet simulator. Adopt mascots inspired
 - Pet progression: earn experience through care actions, level up, and track XP.
 - Every pet has its own personality and mood description.
 - Family album and pet selection.
+- Three-room home: living room, bedroom and garden.
+- Move adopted pets between rooms.
+- Accessory shop with pixel cap, bow, glasses and crown.
+- Owned accessories persist and can be equipped on different pets.
 - Coin and gem wallet with persistent balances.
 - Earn coins by caring for pets, with a short reward cooldown to prevent button-spamming.
 - Earn bonus gems when your family reaches 3, 6 and 10 pets.
@@ -75,7 +79,7 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Project status
 
-**Version 0.5.2** — Pet experience, levels and progression, alongside the coin-and-gem economy.
+**Version 0.6.0** — My Little Home: three rooms, pet placement, persistent accessory inventory and cosmetic equipment.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
