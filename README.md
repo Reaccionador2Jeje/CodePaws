@@ -23,7 +23,7 @@ CodePaws is a full-screen terminal virtual-pet simulator. Adopt mascots inspired
 - Earn coins by caring for pets, with a short reward cooldown to prevent button-spamming.
 - Earn bonus gems when your family reaches 3, 6 and 10 pets.
 - Mascots have rising adoption prices; rare friends also require gems.
-- Automatic JSON saves for pets and wallet data.
+- Automatic JSON saves for pets, wallet, rooms and accessories.
 - Keyboard shortcuts and terminal resizing support.
 
 ## Requirements
@@ -79,8 +79,13 @@ The application takes over the terminal while it is running. Press **Q** to quit
 
 ## Project status
 
-**Version 0.6.1** — My Little Home: three rooms, pet placement, persistent accessory inventory and cosmetic equipment.
+**Version 0.6.2** — Safe Progress: player saves live in the operating-system user data folder, outside the Git checkout, and existing project-local saves are migrated automatically on first launch.
 
 CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
 
 Made with ❤️ and code.
+
+
+## Save location
+
+Player progress is stored outside the repository so `git pull` updates do not overwrite it. On Windows, files are saved under `%APPDATA%\\CodePaws` (typically `C:\\Users\\<you>\\AppData\\Roaming\\CodePaws`). On Linux, CodePaws uses `$XDG_DATA_HOME/CodePaws` or `~/.local/share/CodePaws`. Existing saves in the project's `data` folder are copied to the new location automatically the first time the updated app starts.
