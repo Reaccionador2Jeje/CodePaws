@@ -12,6 +12,7 @@ var spring_arm: SpringArm3D
 func _ready() -> void:
 	name = "Player"
 	add_to_group("player")
+
 	var collider := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = 0.38
@@ -32,18 +33,26 @@ func _ready() -> void:
 	body_mesh.material_override = material
 	add_child(body_mesh)
 
+	# La cámara queda independiente del giro visual del personaje.
 	camera_pivot = Node3D.new()
-	camera_pivot.position.y = 1.45
-	add_child(camera_pivot)
+	camera_pivot.set_as_top_level(true)
+	camera_pivot.global_position = global_position + Vector3(0, 1.45, 0)
+	get_tree().root.add_child.call_deferred(camera_pivot)
+
 	spring_arm = SpringArm3D.new()
-	spring_arm.spring_length = 5.8
+	spring_arm.spring_length = 6.5
 	spring_arm.margin = 0.2
 	camera_pivot.add_child(spring_arm)
+
 	var camera := Camera3D.new()
 	camera.current = true
 	camera.fov = 72.0
 	spring_arm.add_child(camera)
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func _exit_tree() -> void:
+	if is_instance_valid(camera_pivot):
+		camera_pivot.queue_free()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -58,16 +67,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
+	# Seguir al jugador sin heredar su rotación.
+	if is_instance_valid(camera_pivot):
+		camera_pivot.global_position = global_position + Vector3(0, 1.45, 0)
+
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	elif Input.is_action_just_pressed("jump"):
 		velocity.y = jump_velocity
 
 	var input_vector := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
-	var camera_basis := camera_pivot.global_basis
-	var forward := -camera_basis.z
-	var right := camera_basis.x
+	var forward := -camera_pivot.global_basis.z
+	var right := camera_pivot.global_basis.x
 	var direction := (right * input_vector.x + forward * -input_vector.y).normalized()
+
 	if direction.length_squared() > 0.001:
 		velocity.x = direction.x * move_speed
 		velocity.z = direction.z * move_speed
@@ -76,4 +89,5 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.x = move_toward(velocity.x, 0.0, move_speed * 5.0 * delta)
 		velocity.z = move_toward(velocity.z, 0.0, move_speed * 5.0 * delta)
+
 	move_and_slide()
