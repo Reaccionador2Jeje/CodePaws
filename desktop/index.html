@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101a27" />
+    <title>CodePaws — Tu mundo, tu familia</title>
+  </head>
+  <body>
+    <div id="game">
+      <div id="scene"></div>
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="CodePaws inicio"><span class="brand-mark">🐾</span><span>codepaws</span></a>
+        <div class="world-tag"><span class="live-dot"></span> VALLE DE CODEPAWS <span class="divider">/</span> DÍA 01</div>
+        <button class="icon-button" id="sound-toggle" aria-label="Alternar sonido">♫</button>
+      </header>
+      <aside class="welcome-panel">
+        <p class="eyebrow">TU AVENTURA COMIENZA AQUÍ</p>
+        <h1>Un mundo lleno<br>de <em>pequeños amigos.</em></h1>
+        <p class="intro">Explora el valle, conoce a tus compañeros y construye una familia extraordinaria.</p>
+        <div class="quest"><span class="quest-icon">✦</span><div><b>Primer paseo</b><small>Conoce a los amigos que te esperan.</small></div><span class="quest-check">○</span></div>
+      </aside>
+      <section class="pet-card">
+        <div class="pet-avatar" id="pet-avatar">🐍</div>
+        <div class="pet-info"><span class="eyebrow">TU COMPAÑERO</span><strong id="pet-name">Py</strong><small id="pet-mood">Con ganas de explorar</small></div>
+        <button id="feed-button" class="feed-button" title="Dar una merienda">♡ <span>Dar snack</span></button>
+      </section>
+      <footer class="controls">
+        <div class="control-group"><span class="key">W</span><div class="key-row"><span class="key">A</span><span class="key">S</span><span class="key">D</span></div><small>MOVER</small></div>
+        <div class="control-separator"></div>
+        <div class="mouse-hint"><span class="mouse-icon">⌖</span><div><b>Explora a tu ritmo</b><small>Arrastra para mirar alrededor</small></div></div>
+        <div class="build-label">PRE-ALPHA <span>•</span> 0.1.0</div>
+      </footer>
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
