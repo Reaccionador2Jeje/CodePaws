@@ -8,11 +8,13 @@ class_name CodePawsPet
 var happiness: int = 80
 var cleanliness: int = 90
 var hunger: int = 20
+var energy: int = 100
 var _home: Vector3
 var _target: Vector3
 var _wander_timer: float = 0.0
 var _bob_time: float = 0.0
 var _body: MeshInstance3D
+var _need_timer: float = 0.0
 
 func _ready() -> void:
 	add_to_group("pets")
@@ -60,6 +62,13 @@ func _build_mascot() -> void:
 func _process(delta: float) -> void:
 	_bob_time += delta
 	_body.position.y = 0.65 + sin(_bob_time * 3.0) * 0.045
+	_need_timer += delta
+	if _need_timer >= 20.0:
+		_need_timer = 0.0
+		hunger = mini(100, hunger + 2)
+		happiness = maxi(0, happiness - 1)
+		energy = maxi(0, energy - 1)
+
 	_wander_timer -= delta
 	if _wander_timer <= 0.0 or global_position.distance_to(_target) < 0.35:
 		_target = _home + Vector3(
@@ -69,10 +78,36 @@ func _process(delta: float) -> void:
 		_wander_timer = randf_range(2.5, 5.0)
 	var direction := _target - global_position
 	direction.y = 0.0
-	if direction.length() > 0.25:
+	if direction.length() > 0.25 and energy > 5:
 		global_position += direction.normalized() * 1.2 * delta
 		look_at(global_position + direction, Vector3.UP)
 
 func interact() -> String:
 	happiness = mini(100, happiness + 12)
+	cleanliness = mini(100, cleanliness + 1)
 	return "%s está feliz de pasar tiempo contigo. Felicidad: %d%%" % [pet_name, happiness]
+
+func feed() -> String:
+	hunger = maxi(0, hunger - 25)
+	happiness = mini(100, happiness + 3)
+	return "¡%s ha comido! Hambre: %d%%" % [pet_name, hunger]
+
+func to_save_data() -> Dictionary:
+	return {
+		"name": pet_name,
+		"position": [global_position.x, global_position.y, global_position.z],
+		"happiness": happiness,
+		"cleanliness": cleanliness,
+		"hunger": hunger,
+		"energy": energy
+	}
+
+func load_save_data(data: Dictionary) -> void:
+	var saved_position: Array = data.get("position", [global_position.x, global_position.y, global_position.z])
+	if saved_position.size() == 3:
+		global_position = Vector3(float(saved_position[0]), float(saved_position[1]), float(saved_position[2]))
+		_home = global_position
+	happiness = clampi(int(data.get("happiness", happiness)), 0, 100)
+	cleanliness = clampi(int(data.get("cleanliness", cleanliness)), 0, 100)
+	hunger = clampi(int(data.get("hunger", hunger)), 0, 100)
+	energy = clampi(int(data.get("energy", energy)), 0, 100)
