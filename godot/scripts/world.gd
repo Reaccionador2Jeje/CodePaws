@@ -112,7 +112,7 @@ func _spawn_pets() -> void:
 		["Duke", Color(0.82, 0.48, 0.23), Vector3(5, 0, -5)]
 	]
 	for definition in definitions:
-		var pet := PetScript.new() as Node3D
+		var pet := PetScript.new() as CodePawsPet
 		pet.pet_name = definition[0]
 		pet.body_color = definition[1]
 		pet.position = definition[2]
