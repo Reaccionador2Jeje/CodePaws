@@ -297,19 +297,27 @@ for (const x of [-0.55, 0.55]) {
 // Every companion represents a programming language. Some are established
 // community mascots; the others are original CodePaws characters, not official logos.
 const petData = [
-  ["Py", "#55a86b", "snake", "Python"],
-  ["Ferris", "#d66b54", "crab", "Rust"],
-  ["Gopher", "#66a9c8", "gopher", "Go"],
-  ["Duke", "#d9a05c", "coffee", "Java"],
-  ["ElePHPant", "#8e9bd4", "elephant", "PHP"],
-  ["Jelly", "#e5c34f", "lizard", "JavaScript"],
-  ["Ruby", "#d85b68", "gem", "Ruby"],
-  ["Swiftlet", "#df8b45", "bird", "Swift"],
-  ["Kodie", "#9a83ce", "cat", "Kotlin"],
-  ["Cppy", "#5c9db7", "robot", "C++"]
+  ["Py", "#55a86b", "python", "Python", "language"],
+  ["Ferris", "#d66b54", "crab", "Rust", "language"],
+  ["Gopher", "#66a9c8", "gopher", "Go", "language"],
+  ["ElePHPant", "#8e9bd4", "elephant", "PHP", "language"],
+  ["Duke", "#d9a05c", "coffee", "Java", "language"],
+  ["Camel", "#b88b62", "camel", "Perl", "language"],
+  ["Camelia", "#d58bb7", "butterfly", "Raku", "language"],
+  ["Zero & Ziguana", "#78b96c", "iguana", "Zig", "language"],
+  ["Dash", "#55a9d7", "hummingbird", "Dart", "language"],
+  ["Crystal", "#71818b", "crystal", "Crystal", "language"],
+  ["Moby Dock", "#5aaac7", "whale", "Docker", "tool"],
+  ["Mona (Octocat)", "#a78ac9", "octocat", "GitHub", "platform"],
+  ["Tanuki", "#d48c57", "tanuki", "GitLab", "platform"],
+  ["Tux", "#344b5c", "penguin", "Linux", "system"],
+  ["Slonik", "#8e9bd4", "elephant", "PostgreSQL", "tool"],
+  ["Sakila", "#55a9c7", "dolphin", "MySQL", "tool"],
+  ["Ñu GNU", "#9b8b6c", "gnu", "GNU", "system"],
+  ["Kodee", "#9a83ce", "robot", "Kotlin", "language"]
 ];
-const pets = petData.map(([name, color, kind], i) => {
-  const g = group(scene, -7 + (i % 5) * 3.5, 0, -2 - Math.floor(i / 5) * 5);
+const pets = petData.map(([name, color, kind, represents, category], i) => {
+  const g = group(scene, -13 + (i % 6) * 5.2, 0, 2 - Math.floor(i / 6) * 5.2);
   const bodyMat = mat(color, 0.72);
   const creamMat = mat("#f7e9ce");
   sphere(g, 0, 0.72, 0, 0.62, 0.58, 0.55, bodyMat, 14);
@@ -320,7 +328,13 @@ const pets = petData.map(([name, color, kind], i) => {
   sphere(g, 0, 1.24, -0.525, 0.055, 0.045, 0.035, M.dark, 8);
   // Four tiny feet.
   for (const fx of [-0.34, 0.34]) for (const fz of [-0.28, 0.28]) sphere(g, fx, 0.18, fz, 0.16, 0.18, 0.17, bodyMat, 8);
-  if (kind === "snake") {
+  if (kind === "python") {
+    // Python's paired blue-and-yellow snakes, not a single generic snake.
+    sphere(g, 0, 1.72, 0.1, 0.2, 0.27, 0.2, bodyMat, 10);
+    const gold = mat("#f2ca55");
+    curveTube([[-0.16,0.72,0.35],[-0.55,0.52,0.55],[-0.62,0.28,0.84],[-0.25,0.2,1.0],[0.02,0.35,0.82]],0.13,bodyMat,g,20);
+    curveTube([[0.16,0.72,0.35],[0.55,0.52,0.55],[0.62,0.28,0.84],[0.25,0.2,1.0],[-0.02,0.35,0.82]],0.13,gold,g,20);
+  } else if (kind === "snake") {
     sphere(g, 0, 1.72, 0.1, 0.2, 0.34, 0.2, bodyMat, 10);
     const tail = curveTube([[0,0.5,0.4],[0.4,0.35,0.7],[0.65,0.2,0.9],[0.9,0.28,0.75]], 0.13, bodyMat, g, 16);
     tail.castShadow = true;
@@ -353,6 +367,11 @@ const pets = petData.map(([name, color, kind], i) => {
       const a = t * Math.PI / 4;
       curveTube([[Math.cos(a)*0.25,0.52,Math.sin(a)*0.25],[Math.cos(a)*0.58,0.25,Math.sin(a)*0.58],[Math.cos(a)*0.82,0.16,Math.sin(a)*0.82]], 0.09, bodyMat, g, 10);
     }
+  } else if (kind === "tanuki") {
+    for(const sx of [-1,1]) sphere(g,sx*0.27,1.72,0,0.16,0.25,0.13,bodyMat,8);
+    sphere(g,0,0.62,0.57,0.18,0.18,0.5,mat("#66545a"),10);
+    for(let s=0;s<3;s++) sphere(g,0,0.58,0.32+s*0.2,0.19,0.19,0.08,s%2?creamMat:M.dark,8);
+    for(const sx of [-1,1]) sphere(g,sx*0.16,1.4,-0.44,0.12,0.09,0.035,M.dark,8);
   } else if (kind === "raccoon") {
     for (const sx of [-1,1]) sphere(g, sx * 0.27, 1.72, 0, 0.16, 0.25, 0.13, bodyMat, 8);
     sphere(g, 0, 0.62, 0.57, 0.18, 0.18, 0.5, mat("#66545a"), 10);
@@ -362,6 +381,49 @@ const pets = petData.map(([name, color, kind], i) => {
     for (const sx of [-1,1]) sphere(g, sx * 0.48, 1.3, -0.05, 0.28, 0.34, 0.12, bodyMat, 9);
     curveTube([[0,1.2,-0.42],[0,0.92,-0.62],[0.12,0.7,-0.62],[0.2,0.78,-0.62]], 0.14, bodyMat, g, 14);
     sphere(g, 0.02, 1.73, 0.02, 0.12, 0.12, 0.12, creamMat, 8);
+  } else if (kind === "butterfly") {
+    // Camelia, Raku's colorful butterfly mascot.
+    for (const sx of [-1,1]) {
+      sphere(g,sx*0.38,1.18,-0.02,0.38,0.48,0.12,bodyMat,9);
+      sphere(g,sx*0.34,0.68,0.02,0.28,0.3,0.1,creamMat,9);
+    }
+    cylinder(g,0,1.15,-0.12,0.07,0.08,0.95,M.dark,7);
+    curveTube([[-0.04,1.62,-0.1],[-0.2,1.82,-0.1],[-0.28,1.9,-0.1]],0.025,M.dark,g,8);
+    curveTube([[0.04,1.62,-0.1],[0.2,1.82,-0.1],[0.28,1.9,-0.1]],0.025,M.dark,g,8);
+  } else if (kind === "iguana") {
+    sphere(g,0,1.72,0.02,0.2,0.24,0.22,bodyMat,10);
+    for(let n=0;n<5;n++) sphere(g,0,1.95-n*0.12,0.12+n*0.12,0.08,0.1,0.08,creamMat,7);
+    curveTube([[0,0.55,0.4],[0.4,0.35,0.72],[0.7,0.28,0.92],[0.92,0.42,0.72]],0.11,bodyMat,g,16);
+  } else if (kind === "hummingbird") {
+    sphere(g,0,1.73,0.02,0.18,0.2,0.18,bodyMat,10);
+    for(const sx of [-1,1]) { const wing=mesh(new THREE.ConeGeometry(0.16,0.9,5),bodyMat,sx*0.5,1.0,0.02,g); wing.rotation.z=sx*1.0; wing.rotation.x=0.45; }
+    const beak=mesh(new THREE.ConeGeometry(0.045,0.62,5),M.dark,0,1.37,-0.66,g); beak.rotation.x=-Math.PI/2;
+    curveTube([[0,0.6,0.35],[0,0.35,0.75]],0.055,bodyMat,g,8);
+  } else if (kind === "crystal") {
+    const crystal=mesh(new THREE.OctahedronGeometry(0.72,1),bodyMat,0,1.0,0,g);
+    crystal.scale.set(0.82,1.25,0.82);
+    sphere(g,0,1.8,0,0.13,0.13,0.13,creamMat,8);
+    for(const sx of [-1,1]) sphere(g,sx*0.15,1.82,-0.12,0.035,0.05,0.03,M.dark,8);
+  } else if (kind === "dolphin") {
+    sphere(g,0,1.1,0.2,0.48,0.35,0.72,bodyMat,12);
+    const snout=mesh(new THREE.ConeGeometry(0.19,0.62,7),bodyMat,0,1.16,-0.62,g); snout.rotation.x=-Math.PI/2;
+    const fin=mesh(new THREE.ConeGeometry(0.2,0.55,5),bodyMat,0,1.45,0.25,g); fin.rotation.z=Math.PI;
+    for(const sx of [-1,1]) { const fl=mesh(new THREE.ConeGeometry(0.16,0.55,5),bodyMat,sx*0.48,0.88,0.08,g); fl.rotation.z=sx*1.0; }
+  } else if (kind === "penguin") {
+    sphere(g,0,0.95,0.02,0.5,0.76,0.43,bodyMat,12);
+    sphere(g,0,0.92,-0.39,0.34,0.52,0.09,creamMat,10);
+    const beak=mesh(new THREE.ConeGeometry(0.12,0.28,5),M.flowerYellow,0,1.45,-0.48,g); beak.rotation.x=-Math.PI/2;
+    for(const sx of [-1,1]) { const wing=mesh(new THREE.ConeGeometry(0.13,0.68,5),bodyMat,sx*0.48,0.95,0.02,g); wing.rotation.z=sx*1.0; }
+  } else if (kind === "gnu") {
+    for(const sx of [-1,1]) {
+      const horn=mesh(new THREE.ConeGeometry(0.12,0.58,6),M.cream,sx*0.3,1.92,0.02,g); horn.rotation.z=sx*0.75;
+      sphere(g,sx*0.38,1.25,-0.04,0.22,0.28,0.15,bodyMat,8);
+    }
+    curveTube([[0,1.1,-0.42],[0,0.82,-0.58],[0.1,0.7,-0.58]],0.1,bodyMat,g,10);
+    sphere(g,0,1.68,0,0.2,0.2,0.2,bodyMat,9);
+  } else if (kind === "octocat") {
+    for(const sx of [-1,1]) { const ear=mesh(new THREE.ConeGeometry(0.16,0.4,5),bodyMat,sx*0.27,1.78,-0.03,g); ear.rotation.z=sx*-0.12; }
+    for(let t=0;t<5;t++) { const a=(t-2)*0.38; curveTube([[a*0.2,0.55,0.25],[a,0.28,0.55],[a*1.5,0.18,0.88]],0.085,bodyMat,g,10); }
   } else if (kind === "lizard") {
     // JavaScript: bright little gecko with a curled tail and toe pads.
     sphere(g, 0, 1.72, 0.02, 0.2, 0.24, 0.22, bodyMat, 10);
@@ -403,8 +465,9 @@ const pets = petData.map(([name, color, kind], i) => {
     for (const sx of [-1,1]) sphere(g, sx * 0.27, 1.72, -0.02, 0.08, 0.18, 0.08, bodyMat, 8);
   }
   g.userData.kind = kind;
-  g.userData.language = petData[i][3];
-  return { name, kind, language: petData[i][3], group: g, hunger: 18, happiness: 86 };
+  g.userData.represents = represents;
+  g.userData.category = category;
+  return { name, kind, represents, category, group: g, hunger: 18, happiness: 86 };
 });
 
 // Camera and movement: independent yaw, no camera snapping on keyboard input.
@@ -457,8 +520,8 @@ if (Array.isArray(saved.pets)) {
 }
 function showPet() {
   const pet = pets[selectedPet];
-  document.querySelector("#pet-name").textContent = pet.name + " · " + pet.language;
-  document.querySelector("#pet-avatar").textContent = ({Py:"🐍",Ferris:"🦀",Gopher:"🐹",Duke:"☕",ElePHPant:"🐘",Jelly:"🦎",Ruby:"💎",Swiftlet:"🐦",Kodie:"🐱",Cppy:"🤖"})[pet.name] || "🐾";
+  document.querySelector("#pet-name").textContent = pet.name + " · " + pet.represents;
+  document.querySelector("#pet-avatar").textContent = ({"Py":"🐍","Ferris":"🦀","Gopher":"🐹","ElePHPant":"🐘","Duke":"☕","Camel":"🐪","Camelia":"🦋","Zero & Ziguana":"🦎","Dash":"🐦","Crystal":"💎","Moby Dock":"🐳","Mona (Octocat)":"🐙","Tanuki":"🦝","Tux":"🐧","Slonik":"🐘","Sakila":"🐬","Ñu GNU":"🦬","Kodee":"🤖"})[pet.name] || "🐾";
   document.querySelector("#pet-mood").textContent = pet.hunger > 65 ? "Tiene un poquito de hambre" : "Con ganas de explorar";
 }
 showPet();
