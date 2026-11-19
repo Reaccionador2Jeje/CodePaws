@@ -62,6 +62,10 @@ jobs:
         working-directory: desktop
         run: npm install
 
+      - name: Generate platform app icons
+        working-directory: desktop
+        run: npm run tauri -- icon assets/codepaws.svg --output src-tauri/icons
+
       - name: Build desktop bundles
         working-directory: desktop
         run: npm run tauri -- build --bundles ${{ matrix.bundles }}
