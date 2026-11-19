@@ -2,125 +2,67 @@
 
 **Your Programming Family — A Little Home for the World of Code**
 
-CodePaws is an open-source virtual-pet project with a full-screen terminal simulator and a playable pixel-art desktop game. Adopt programming languages that have recognized mascots, take care of them, and grow your own programming family.
+CodePaws is an open-source virtual-pet game about adopting programming mascots, caring for them and exploring a colorful world together.
 
-> **New direction:** CodePaws 3D is now being built in Godot 4 as a stylized, lightweight open-world pet adventure. The original Python/Pygame version remains in the repository as a prototype/reference while the 3D game is developed in [`godot/`](godot/). Steam is a future release target, not a current release.
+## Current direction: CodePaws Desktop
 
-## Features
+The active desktop direction is a cross-platform 3D game built with **Tauri 2 + Three.js**. The desktop client lives in [`desktop/`](desktop/), while the original Python/Pygame and Godot prototypes remain available as project history and references.
 
-- Full-screen TUI powered by [Textual](https://textual.textualize.io/).
-- Desktop pixel-art virtual pet game powered by [Pygame-CE](https://pyga.me/), sharing pets and save files with the TUI.
-- Early Godot 4 3D prototype in `godot/`: stylized valley, third-person movement, wandering companions and proximity interactions.
-- GitHub Actions builds downloadable Windows and Linux desktop packages and publishes them as Release assets when a `v*` tag is pushed.
-- Reference-informed 48×48 pixel-art companions rendered with terminal true-color pixels.
-- Mascot/logo reference index with source links and attribution notes (`docs/mascot-references.md`).
-- Animated idle bobbing, blinking and care-action effects.
-- Adopt 10 mascots: Python, Rust, Go, Java, Docker, GitHub, GitLab, PHP, Kotlin and Perl.
-- Feed, play with, let sleep, and bathe your pets.
-- Happiness, energy, hunger and cleanliness statistics.
-- Pet progression: earn experience through care actions, level up, and track XP.
-- Every pet has its own personality and mood description.
-- Family album and pet selection.
-- Four-room home: living room, bedroom, garden and an interactive bathroom.
-- Multiple adopted companions can share a room and remain visible together.
-- Every companion roams independently, turns toward its direction of travel, and responds to floor clicks when selected.
-- Friends occasionally meet in the same room, gather together, show heart effects, and gain happiness from social time.
-- Place shared food bowls in rooms; hungry companions walk over, eat a serving, and gain a little experience.
-- Tired companions assigned to the bedroom can walk to the bed and take an automatic nap, restoring energy.
-- Companions with low cleanliness assigned to the bathroom seek the bathtub and clean themselves automatically.
-- Room membership is individual: move one friend to another room while the rest continue living elsewhere.
-- Clickable room objects invite pets to visit the sofa, bed or garden.
-- Move adopted pets between rooms.
-- Accessory shop with pixel cap, bow, glasses and crown.
-- Owned accessories persist and can be equipped on different pets.
-- Coin and gem wallet with persistent balances.
-- Earn coins by caring for pets, with a short reward cooldown to prevent button-spamming.
-- Earn bonus gems when your family reaches 3, 6 and 10 pets.
-- Mascots have rising adoption prices; rare friends also require gems.
-- Automatic JSON saves for pets, wallet, rooms and accessories.
-- Keyboard shortcuts and terminal resizing support.
+The goal is to distribute native desktop installers through GitHub Releases:
 
-## Godot 4 3D prototype
+- **Windows:** NSIS setup executable (`.exe`)
+- **macOS:** disk image (`.dmg`)
+- **Debian / Ubuntu:** package (`.deb`)
+- **Fedora / RPM-based Linux:** package (`.rpm`)
 
-Open `godot/project.godot` with Godot 4.3 or newer. See [`godot/README.md`](godot/README.md) for controls and current prototype scope. The 3D project is under active construction; it is not yet a complete open world or Steam-ready build.
+GitHub Actions builds each platform on its matching hosted runner. No local game-engine installation is needed to produce release builds.
 
-## Requirements
+## Desktop client development
 
-- Python 3.10 or newer
-- A terminal with UTF-8 support for the TUI
-- A desktop environment for the Pygame game
+See [`desktop/README.md`](desktop/README.md) for setup instructions.
 
-## Install
+Requirements for local development:
+- Node.js 20+
+- Rust stable
+- Tauri 2 platform prerequisites
 
-```bash
-git clone https://github.com/Reaccionador2Jeje/CodePaws.git
-cd CodePaws
-python -m pip install -r requirements.txt
+Run from the `desktop/` directory:
+
+```sh
+npm install
+npm run tauri -- dev
 ```
 
-## Run
+## Game vision
 
-```bash
-python main.py
-```
+CodePaws is planned as a cozy, stylized 3D open-world pet adventure featuring:
 
-To launch the desktop game:
+- A player home with an explorable interior and garden.
+- A lively town with streets, a plaza, shops and friendly characters.
+- Large mountain ranges, forests, lakes and hidden places.
+- Ten programming mascots: Py, Ferris, Gopher, Duke, Moby, Mona, Tanuki, ElePHPant, Kodee and Camel.
+- Pet care: hunger, energy, cleanliness, happiness, experience and levels.
+- Adoption, accessories, rooms, coins, gems and persistent saves.
 
-```bash
-python desktop_game.py
-```
+The current Three.js scene is an early playable foundation, not the finished open world. Features will be added in small, testable stages.
 
-The TUI takes over the terminal while it is running; press **Q** to quit. In the desktop game, press **A** to open the Adoption Center, click the floor to guide your pet, and click room objects to invite it over. Press **Esc** to return home from the Adoption Center, or **Esc** from the home screen to quit.
+## Legacy prototypes
 
-## Keyboard shortcuts
+- `codepaws/` — original Python virtual-pet systems and Pygame interface.
+- `godot/` — earlier Godot 4 3D experiment, paused while the Tauri desktop client is developed.
 
-| Key | Action |
-| --- | --- |
-| H | Home |
-| A | Adoption Center |
-| F | Family |
-| Q | Quit |
+These folders are intentionally retained; the new desktop client does not delete or overwrite them.
 
-## Desktop game controls
+## GitHub Actions builds
 
-| Key | Action |
-| --- | --- |
-| A | Open Adoption Center |
-| F / P / S / B | Feed / Play / Sleep / Bathe |
-| Left / Right | Switch companion |
-| 1 / 2 / 3 | Change room |
-| Esc | Return from Adoption Center or quit from home |
+Open the **Actions** tab and run **CodePaws Desktop builds** with **Run workflow** to create downloadable test installers. Pushing a tag such as `v1.0.0` builds all four package formats and creates a GitHub Release.
 
-## Builds and releases
-
-Run the **Desktop builds and releases** workflow manually from the Actions tab to create Windows and Linux build artifacts. Pushing a tag such as `v0.9.0` runs the same builds and creates a GitHub Release containing both ZIP packages. Each workflow artifact is retained for 30 days.
-
-## Mascot family
-
-Only languages with an established mascot are included:
-
-| Language / tool | Mascot |
-| --- | --- |
-| Python | Py |
-| Rust | Ferris |
-| Go | Gopher |
-| Java | Duke |
-| Docker | Moby |
-| GitHub | Mona |
-| GitLab | Tanuki |
-| PHP | ElePHPant |
-| Kotlin | Kodee |
-| Perl | Camel |
+Each build is produced on its native operating-system runner. Build artifacts are retained for 30 days. The first builds still need runtime testing on Windows, macOS and Linux; package generation alone does not certify compatibility.
 
 ## Project status
 
-**Version 0.9.0-dev** — Desktop Game: a playable Pygame-CE desktop experience with autonomous pet roaming is available alongside the existing TUI. Windows and Linux packages are built by GitHub Actions; pushing a version tag such as `v0.9.0` creates a GitHub Release with downloadable builds. **Version 0.8.1** — Mascot Family: the catalog includes languages and developer tools with recognized mascots. Logo-only entries without mascots remain excluded. Player saves remain outside the Git checkout.
+**1.0.0-dev — Desktop foundation:** Tauri 2 shell, Three.js 3D valley prototype, basic third-person movement, initial pet family display and cross-platform GitHub Actions packaging pipeline.
 
-CodePaws is a playful open-source project. Adopt. Play. Care. Build your programming family!
+CodePaws is an open-source project. Adopt. Explore. Care. Build your programming family!
 
 Made with ❤️ and code.
-
-
-## Save location
-
-Player progress is stored outside the repository so `git pull` updates do not overwrite it. On Windows, files are saved under `%APPDATA%\\CodePaws` (typically `C:\\Users\\<you>\\AppData\\Roaming\\CodePaws`). On Linux, CodePaws uses `$XDG_DATA_HOME/CodePaws` or `~/.local/share/CodePaws`. Existing saves in the project's `data` folder are copied to the new location automatically the first time the updated app starts.
