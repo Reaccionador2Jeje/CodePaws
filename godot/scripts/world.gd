@@ -6,6 +6,7 @@ const PetScript = preload("res://scripts/pet.gd")
 var _message_label: Label
 var _nearby_pet: CodePawsPet
 var _message_timer: float = 0.0
+const SAVE_PATH := "user://codepaws_save.json"
 
 func _ready() -> void:
 	randomize()
@@ -14,6 +15,15 @@ func _ready() -> void:
 	_spawn_player()
 	_spawn_pets()
 	_build_hud()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_F5:
+			_save_game()
+		elif event.keycode == KEY_F9:
+			_load_game()
+		elif event.keycode == KEY_E and _nearby_pet:
+			_show_message(_nearby_pet.feed())
 
 func _process(delta: float) -> void:
 	_message_timer = maxf(0.0, _message_timer - delta)
@@ -32,7 +42,7 @@ func _process(delta: float) -> void:
 		if _nearby_pet:
 			_message_label.text = "F  ·  Interactuar con " + _nearby_pet.pet_name
 		else:
-			_message_label.text = "WASD · Mover    ESPACIO · Saltar    F · Interactuar    ESC · Liberar mouse"
+			_message_label.text = "WASD · Mover    ESPACIO · Saltar    F · Acariciar    E · Alimentar    F5 · Guardar    F9 · Cargar    ESC · Mouse"
 
 func _build_environment() -> void:
 	var world_environment := WorldEnvironment.new()
@@ -166,3 +176,45 @@ func _material(color: Color) -> StandardMaterial3D:
 	material.albedo_color = color
 	material.roughness = 0.9
 	return material
+
+func _save_game() -> void:
+	var player := get_tree().get_first_node_in_group("player") as Node3D
+	var pet_data: Array[Dictionary] = []
+	for pet in get_tree().get_nodes_in_group("pets"):
+		pet_data.append((pet as CodePawsPet).to_save_data())
+	var data := {
+		"version": 1,
+		"player_position": [player.global_position.x, player.global_position.y, player.global_position.z] if player else [0.0, 0.0, 8.0],
+		"pets": pet_data
+	}
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		_show_message("No se pudo guardar la partida.")
+		return
+	file.store_string(JSON.stringify(data))
+	file.close()
+	_show_message("Partida guardada correctamente.")
+
+func _load_game() -> void:
+	if not FileAccess.file_exists(SAVE_PATH):
+		_show_message("Todavía no existe una partida guardada.")
+		return
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		_show_message("No se pudo abrir la partida.")
+		return
+	var parsed: Variant = JSON.parse_string(file.get_as_text())
+	file.close()
+	if not parsed is Dictionary:
+		_show_message("El archivo de guardado no es válido.")
+		return
+	var player := get_tree().get_first_node_in_group("player") as Node3D
+	var player_position: Array = parsed.get("player_position", [])
+	if player and player_position.size() == 3:
+		player.global_position = Vector3(float(player_position[0]), float(player_position[1]), float(player_position[2]))
+	var saved_pets: Array = parsed.get("pets", [])
+	var current_pets := get_tree().get_nodes_in_group("pets")
+	for index in range(mini(saved_pets.size(), current_pets.size())):
+		if saved_pets[index] is Dictionary:
+			(current_pets[index] as CodePawsPet).load_save_data(saved_pets[index])
+	_show_message("Partida cargada correctamente.")
