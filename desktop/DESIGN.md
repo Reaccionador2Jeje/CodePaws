@@ -112,3 +112,32 @@ Use friendly, concise Spanish. Prefer “Dar snack”, “Explorar” and “Con
 - **Do:** Use warm, readable HUD surfaces with strong contrast.
 - **Don't:** Cover the player or companion with decorative panels.
 - **Don't:** imply that unfinished prototype systems are already implemented.
+
+## Mascot identity and canon
+
+The companion roster represents real programming languages, developer tools, platforms and operating systems. Do not replace these identities with unrelated generic animal pets or present original designs as official mascots.
+
+### Canonical roster
+
+| Mascot | Represents | Category |
+|---|---|---|
+| Py (paired blue/yellow snakes) | Python | Language |
+| Ferris (crab) | Rust | Language |
+| Gopher (gopher) | Go | Language |
+| ElePHPant (elephant) | PHP | Language |
+| Duke | Java | Language |
+| Camel | Perl | Language |
+| Camelia (butterfly) | Raku | Language |
+| Zero and Ziguana (iguanas) | Zig | Language |
+| Dash (hummingbird) | Dart | Language |
+| Crystal (faceted crystal) | Crystal | Language |
+| Moby Dock (whale) | Docker | Tool |
+| Mona / Octocat | GitHub | Platform |
+| Tanuki | GitLab | Platform |
+| Tux (penguin) | Linux | Operating system |
+| Slonik (elephant) | PostgreSQL | Tool |
+| Sakila (dolphin) | MySQL | Tool |
+| GNU (gnu) | GNU | System |
+| Kodee | Kotlin | Language |
+
+Use original, game-ready 3D interpretations that clearly communicate each mascot's recognizable silhouette. Keep official names and associations accurate. The roster may grow, but each new companion must be tied to a real language, tool, platform or system and its known mascot where one exists.
