@@ -37,7 +37,7 @@ func _ready() -> void:
 	camera_pivot = Node3D.new()
 	camera_pivot.set_as_top_level(true)
 	camera_pivot.global_position = global_position + Vector3(0, 1.45, 0)
-	get_tree().root.add_child.call_deferred(camera_pivot)
+	get_tree().root.add_child(camera_pivot)
 
 	spring_arm = SpringArm3D.new()
 	spring_arm.spring_length = 6.5
