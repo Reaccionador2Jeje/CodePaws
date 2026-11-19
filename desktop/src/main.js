@@ -294,10 +294,19 @@ for (const x of [-0.55, 0.55]) {
 
 // Distinct mascot silhouettes: each friend gets its own ears, fins, tail,
 // antennae or shell details instead of sharing one generic blob.
+// Every companion represents a programming language. Some are established
+// community mascots; the others are original CodePaws characters, not official logos.
 const petData = [
-  ["Py", "#55a86b", "snake"], ["Ferris", "#d66b54", "crab"], ["Gopher", "#66a9c8", "gopher"], ["Duke", "#d9a05c", "coffee"],
-  ["Moby", "#5aaac7", "whale"], ["Mona", "#a78ac9", "octopus"], ["Tanuki", "#d48c57", "raccoon"], ["ElePHPant", "#8e9bd4", "elephant"],
-  ["Kodee", "#a18bdb", "robot"], ["Camel", "#b88b62", "camel"]
+  ["Py", "#55a86b", "snake", "Python"],
+  ["Ferris", "#d66b54", "crab", "Rust"],
+  ["Gopher", "#66a9c8", "gopher", "Go"],
+  ["Duke", "#d9a05c", "coffee", "Java"],
+  ["ElePHPant", "#8e9bd4", "elephant", "PHP"],
+  ["Jelly", "#e5c34f", "lizard", "JavaScript"],
+  ["Ruby", "#d85b68", "gem", "Ruby"],
+  ["Swiftlet", "#df8b45", "bird", "Swift"],
+  ["Kodie", "#9a83ce", "cat", "Kotlin"],
+  ["Cppy", "#5c9db7", "robot", "C++"]
 ];
 const pets = petData.map(([name, color, kind], i) => {
   const g = group(scene, -7 + (i % 5) * 3.5, 0, -2 - Math.floor(i / 5) * 5);
@@ -353,6 +362,33 @@ const pets = petData.map(([name, color, kind], i) => {
     for (const sx of [-1,1]) sphere(g, sx * 0.48, 1.3, -0.05, 0.28, 0.34, 0.12, bodyMat, 9);
     curveTube([[0,1.2,-0.42],[0,0.92,-0.62],[0.12,0.7,-0.62],[0.2,0.78,-0.62]], 0.14, bodyMat, g, 14);
     sphere(g, 0.02, 1.73, 0.02, 0.12, 0.12, 0.12, creamMat, 8);
+  } else if (kind === "lizard") {
+    // JavaScript: bright little gecko with a curled tail and toe pads.
+    sphere(g, 0, 1.72, 0.02, 0.2, 0.24, 0.22, bodyMat, 10);
+    curveTube([[0,0.55,0.4],[0.35,0.35,0.72],[0.7,0.28,0.92],[0.92,0.42,0.72]], 0.11, bodyMat, g, 16);
+    for (const sx of [-1,1]) for (const fz of [-0.2,0.28]) sphere(g, sx*0.52,0.2,fz,0.13,0.09,0.16,bodyMat,8);
+  } else if (kind === "gem") {
+    // Ruby: faceted red gemstone body and tiny crown facets.
+    const gem = mesh(new THREE.OctahedronGeometry(0.58, 0), bodyMat, 0, 1.0, 0, g);
+    gem.scale.set(1.0, 1.12, 0.82);
+    sphere(g, 0, 1.72, 0, 0.16, 0.16, 0.16, creamMat, 8);
+    for (const sx of [-1,1]) sphere(g,sx*0.16,1.75,-0.13,0.035,0.05,0.03,M.dark,8);
+  } else if (kind === "bird") {
+    // Swift: swift-inspired bird with swept wings and a forked tail.
+    sphere(g, 0, 1.73, 0.02, 0.18, 0.2, 0.18, bodyMat, 10);
+    for (const sx of [-1,1]) {
+      const wing = mesh(new THREE.ConeGeometry(0.2,0.82,5),bodyMat,sx*0.58,0.95,0.02,g);
+      wing.rotation.z = sx*1.12; wing.rotation.x = 0.45;
+    }
+    const beak = mesh(new THREE.ConeGeometry(0.1,0.28,5),M.flowerYellow,0,1.35,-0.48,g);
+    beak.rotation.x = -Math.PI/2;
+    curveTube([[0,0.55,0.45],[-0.18,0.28,0.8],[0,0.34,0.92],[0.18,0.28,0.8]],0.08,bodyMat,g,12);
+  } else if (kind === "cat") {
+    for (const sx of [-1,1]) {
+      const ear = mesh(new THREE.ConeGeometry(0.17,0.48,5),bodyMat,sx*0.27,1.78,-0.03,g);
+      ear.rotation.z = sx*-0.12;
+    }
+    sphere(g, 0, 0.62, 0.53, 0.14, 0.14, 0.42, bodyMat, 9);
   } else if (kind === "robot") {
     const screen = box(g, 0, 1.35, -0.42, 0.52, 0.32, 0.08, mat("#9fe2d4"));
     screen.material.emissive = new THREE.Color("#397c70");
@@ -367,7 +403,8 @@ const pets = petData.map(([name, color, kind], i) => {
     for (const sx of [-1,1]) sphere(g, sx * 0.27, 1.72, -0.02, 0.08, 0.18, 0.08, bodyMat, 8);
   }
   g.userData.kind = kind;
-  return { name, kind, group: g, hunger: 18, happiness: 86 };
+  g.userData.language = petData[i][3];
+  return { name, kind, language: petData[i][3], group: g, hunger: 18, happiness: 86 };
 });
 
 // Camera and movement: independent yaw, no camera snapping on keyboard input.
@@ -420,8 +457,8 @@ if (Array.isArray(saved.pets)) {
 }
 function showPet() {
   const pet = pets[selectedPet];
-  document.querySelector("#pet-name").textContent = pet.name;
-  document.querySelector("#pet-avatar").textContent = ({Py:"🐍",Ferris:"🦀",Gopher:"🐹",Duke:"☕",Moby:"🐳",Mona:"🐙",Tanuki:"🦝",ElePHPant:"🐘",Kodee:"🤖",Camel:"🐪"})[pet.name] || "🐾";
+  document.querySelector("#pet-name").textContent = pet.name + " · " + pet.language;
+  document.querySelector("#pet-avatar").textContent = ({Py:"🐍",Ferris:"🦀",Gopher:"🐹",Duke:"☕",ElePHPant:"🐘",Jelly:"🦎",Ruby:"💎",Swiftlet:"🐦",Kodie:"🐱",Cppy:"🤖"})[pet.name] || "🐾";
   document.querySelector("#pet-mood").textContent = pet.hunger > 65 ? "Tiene un poquito de hambre" : "Con ganas de explorar";
 }
 showPet();
