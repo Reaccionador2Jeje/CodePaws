@@ -4,10 +4,13 @@
 
 CodePaws is an open-source virtual-pet project with a full-screen terminal simulator and a playable pixel-art desktop game. Adopt programming languages that have recognized mascots, take care of them, and grow your own programming family.
 
+> **New direction:** CodePaws 3D is now being built in Godot 4 as a stylized, lightweight open-world pet adventure. The original Python/Pygame version remains in the repository as a prototype/reference while the 3D game is developed in [`godot/`](godot/). Steam is a future release target, not a current release.
+
 ## Features
 
 - Full-screen TUI powered by [Textual](https://textual.textualize.io/).
 - Desktop pixel-art virtual pet game powered by [Pygame-CE](https://pyga.me/), sharing pets and save files with the TUI.
+- Early Godot 4 3D prototype in `godot/`: stylized valley, third-person movement, wandering companions and proximity interactions.
 - GitHub Actions builds downloadable Windows and Linux desktop packages and publishes them as Release assets when a `v*` tag is pushed.
 - Reference-informed 48×48 pixel-art companions rendered with terminal true-color pixels.
 - Mascot/logo reference index with source links and attribution notes (`docs/mascot-references.md`).
@@ -36,6 +39,10 @@ CodePaws is an open-source virtual-pet project with a full-screen terminal simul
 - Mascots have rising adoption prices; rare friends also require gems.
 - Automatic JSON saves for pets, wallet, rooms and accessories.
 - Keyboard shortcuts and terminal resizing support.
+
+## Godot 4 3D prototype
+
+Open `godot/project.godot` with Godot 4.3 or newer. See [`godot/README.md`](godot/README.md) for controls and current prototype scope. The 3D project is under active construction; it is not yet a complete open world or Steam-ready build.
 
 ## Requirements
 
