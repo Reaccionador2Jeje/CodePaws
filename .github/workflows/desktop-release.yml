@@ -9,6 +9,9 @@ on:
     paths:
       - "desktop/**"
       - ".github/workflows/desktop-release.yml"
+  release:
+    types:
+      - published
   workflow_dispatch:
 
 permissions:
